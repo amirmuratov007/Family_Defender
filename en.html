@@ -6,109 +6,110 @@
   <meta name="theme-color" content="#050506">
   <link rel="manifest" href="manifest.webmanifest">
   <title>Heimdall-Group - Family Protection</title>
-  <link rel="stylesheet" href="style.css?v=12">
+  <link rel="stylesheet" href="style.css?v=13">
 </head>
 <body>
-  <canvas id="net" aria-hidden="true"></canvas>
-  <div class="app-shell">
-    <header class="topbar">
-      <a class="brand" href="index.html" aria-label="Heimdall-Group">
-        <img src="heimdall-logo.svg?v=12" alt="Heimdall-Group logo">
-        <span><strong>Heimdall-Group</strong><small>Family Protection</small></span>
+  <canvas id="net"></canvas>
+  <div class="page">
+    <nav class="nav">
+      <a class="brand" href="#top" aria-label="Heimdall-Group">
+        <img class="brand-logo" src="heimdall-logo.svg?v=13" alt="Heimdall logo">
+        <span><strong>Heimdall-Group</strong><em>Family Protection</em></span>
       </a>
-      <nav class="top-actions" aria-label="Language switch">
-        <a class="btn secondary" href="ru.html">RU</a>
-        <a class="btn primary" href="#install">Connect iPhone</a>
-      </nav>
-    </header>
+      <div class="nav-actions">
+        <a class="btn ghost" href="ru.html">RU</a>
+        <a class="btn gold" href="#install">Connect iPhone</a>
+      </div>
+    </nav>
 
-    <main class="dashboard-grid product-mode">
-      <aside class="sidebar panel">
-        <p class="kicker">Parent</p>
-        <h1>Family Console</h1>
-        <p class="muted">This is the parent's main screen: connect iPhones, set rules and receive alerts about risky actions.</p>
-        <div class="profile-list" aria-label="Family profiles">
-          <button class="profile active" data-profile="Alice" data-risk="Protected"><span>Alice</span><small>14 · profile active</small></button>
-          <button class="profile" data-profile="Mark" data-risk="Needs setup"><span>Mark</span><small>11 · waiting for iPhone</small></button>
-          <button class="profile" data-profile="Grandmother" data-risk="Protected"><span>Grandmother</span><small>72 · profile active</small></button>
-        </div>
-        <a class="btn primary full" href="#install">Add device</a>
-      </aside>
-
-      <section class="main-console">
-        <section class="hero-panel panel">
-          <div>
-            <p class="kicker">Heimdall Protection</p>
-            <h2>The parent controls protection. The child configures nothing.</h2>
-            <p class="muted wide">Product flow: the parent connects an iPhone, enables rules and receives alerts about game-to-messenger moves, remote-access installs, banking after chat and unknown night contacts.</p>
+    <main id="top">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Heimdall-Group · Family Protection</p>
+          <h1>Family protection against messenger scams.</h1>
+          <p class="copy">A parent product for risky new contacts, game-chat to private-message migration, pressure, secrecy, codes, money, addresses, photos and remote access attempts.</p>
+          <div class="actions">
+            <a class="btn gold" href="#console">Open family console</a>
+            <a class="btn ghost" href="#how">How it works</a>
           </div>
-          <img class="hero-logo" src="heimdall-logo.svg?v=12" alt="Heimdall logo">
-        </section>
+        </div>
+        <div class="hero-mark" aria-hidden="true">
+          <img src="heimdall-logo.svg?v=13" alt="">
+        </div>
+      </section>
 
-        <section class="kpi-grid" aria-label="Protection status">
-          <article class="kpi panel"><span>2</span><small>connected devices</small></article>
-          <article class="kpi panel danger"><span id="riskScore">Protected</span><small>selected profile</small></article>
-          <article class="kpi panel"><span>7</span><small>enabled rules</small></article>
-          <article class="kpi panel"><span>24/7</span><small>event monitoring</small></article>
-        </section>
+      <section class="console" id="console">
+        <div class="console-head">
+          <div>
+            <p class="eyebrow">Family screen</p>
+            <h2>Protection console</h2>
+          </div>
+          <a class="btn gold" href="#install">Add first iPhone</a>
+        </div>
 
-        <section class="two-col" id="install">
-          <article class="panel setup-panel">
-            <p class="kicker">iPhone Connection</p>
-            <h3>What the parent does</h3>
-            <ol class="steps">
-              <li><b>1. Open the site on the child's iPhone</b><span>The parent opens the link directly and does not ask the child to configure anything.</span></li>
-              <li><b>2. Install Heimdall</b><span>Add the web app to the Home Screen and install a family profile when the profile backend is connected.</span></li>
-              <li><b>3. Enable Screen Time</b><span>The parent sets a Screen Time passcode, app limits and purchase approval.</span></li>
-              <li><b>4. Enable rules</b><span>Telegram, Discord, games, banking and remote-access apps receive family policies.</span></li>
-            </ol>
-            <div class="install-actions">
-              <a class="btn primary" href="manifest.webmanifest">Install PWA</a>
-              <a class="btn secondary" href="IPHONE_SETUP_EN.md">iPhone guide</a>
+        <div class="kpis">
+          <article><span>0</span><strong>devices connected</strong></article>
+          <article><span>Not selected</span><strong>family profile</strong></article>
+          <article><span>5</span><strong>base rules ready</strong></article>
+          <article><span>24/7</span><strong>alert readiness</strong></article>
+        </div>
+
+        <div class="console-grid">
+          <aside class="panel">
+            <img class="panel-logo" src="heimdall-logo.svg?v=13" alt="">
+            <h3>No family members added yet</h3>
+            <p>Real iPhones, names and statuses will appear here only after parent setup. There are no fake children on this screen.</p>
+            <a class="btn gold full" href="#install">Add first iPhone</a>
+          </aside>
+
+          <section class="panel">
+            <h3>Connected devices</h3>
+            <div class="empty-state">
+              <strong>No connected iPhones</strong>
+              <p>The device will appear here after Heimdall is installed and approved by the parent.</p>
             </div>
-          </article>
+          </section>
 
-          <article class="panel device-panel">
-            <p class="kicker">Devices</p>
-            <h3>Family status</h3>
-            <div class="device-row ok"><b>Alice · iPhone</b><span>Screen Time enabled</span><em>Active</em></div>
-            <div class="device-row wait"><b>Mark · iPhone</b><span>Waiting for setup</span><em>Connect</em></div>
-            <div class="device-row ok"><b>Grandmother · iPhone</b><span>Heimdall profile added</span><em>Active</em></div>
-          </article>
-        </section>
-
-        <section class="two-col">
-          <article class="panel feed-panel">
-            <div class="section-head">
-              <div><p class="kicker">Alerts</p><h3>What the parent sees</h3></div>
-              <span class="status-dot">online</span>
+          <section class="panel">
+            <h3>Alert types</h3>
+            <div class="rules">
+              <div><b>New contact</b><span>The child starts talking to someone who was not present before.</span></div>
+              <div><b>Game chat to private chat</b><span>A contact moves the conversation to Telegram, WhatsApp or direct messages.</span></div>
+              <div><b>Pressure and secrecy</b><span>They ask not to tell anyone, rush the child, or threaten blocks, police or punishment.</span></div>
+              <div><b>Codes, bank, address, photos</b><span>They ask for a code, transfer, card, location, documents or private photos.</span></div>
+              <div><b>Remote access</b><span>They push AnyDesk, RustDesk, TeamViewer or a similar app installation.</span></div>
             </div>
-            <div class="feed">
-              <div class="alert high"><b>New contact after game chat</b><span>Heimdall alerts the parent when a child moves from a game to private messaging.</span></div>
-              <div class="alert critical"><b>Messenger → banking app</b><span>Dangerous chain: conversation, urgency, then financial action.</span></div>
-              <div class="alert critical"><b>AnyDesk / RustDesk install attempt</b><span>Remote access is blocked by family policy.</span></div>
-              <div class="alert medium"><b>Night contact outside address book</b><span>The parent gets a signal without reading the entire private chat.</span></div>
-            </div>
-          </article>
+          </section>
+        </div>
+      </section>
 
-          <article class="panel policy-panel">
-            <div class="section-head"><div><p class="kicker">Rules</p><h3>Family policies</h3></div></div>
-            <label class="policy"><input type="checkbox" checked><span>Require approval for Telegram and Discord</span><em>on</em></label>
-            <label class="policy"><input type="checkbox" checked><span>Block AnyDesk, RustDesk, TeamViewer</span><em>on</em></label>
-            <label class="policy"><input type="checkbox" checked><span>Alert on game → private messenger</span><em>on</em></label>
-            <label class="policy"><input type="checkbox" checked><span>Alert on bank after messenger</span><em>on</em></label>
-            <label class="policy"><input type="checkbox" checked><span>No installs without parent</span><em>on</em></label>
-          </article>
-        </section>
+      <section class="section" id="install">
+        <p class="eyebrow">Setup</p>
+        <h2>What the parent does</h2>
+        <div class="steps">
+          <article><span>1</span><h3>Open the site on the parent phone</h3><p>The parent opens the family console and creates a family profile. This is the web version; the next production step is a native iOS client.</p></article>
+          <article><span>2</span><h3>Install Heimdall on the child iPhone</h3><p>Through App Store or TestFlight. The child does not configure protection alone: the parent enables and approves the device.</p></article>
+          <article><span>3</span><h3>Enable iOS family controls</h3><p>Real app shielding and device activity require Apple's Family Controls entitlement. The Apple request document is already in the project.</p></article>
+          <article><span>4</span><h3>Receive alerts</h3><p>Alerts are raised for new contacts, migration from games to messengers, requests for codes, money or secrecy.</p></article>
+        </div>
+      </section>
 
-        <section class="panel reality-panel">
-          <p class="kicker">Production layer</p>
-          <h3>What is needed for real protection, not a mockup</h3>
-          <p class="muted wide">The site is now the parent console. To actually protect iPhones it needs the next layer: a Heimdall iOS app with Apple's Family Controls entitlement, a policy server and push notifications. Without that, no website can secretly read Telegram or control apps on iPhone.</p>
-        </section>
+      <section class="section" id="how">
+        <p class="eyebrow">How it works</p>
+        <h2>The honest iPhone architecture</h2>
+        <div class="truth">
+          <p>A website cannot silently read Telegram on iPhone. Apple sandboxing and encrypted messengers do not allow a normal site or app to invisibly inspect private chats.</p>
+          <p>The real product is a parent web console, a native iOS app on the child device, Apple Family Controls entitlement, an alert server and push notifications.</p>
+          <p>Before entitlement approval, the web console works as the product cockpit and TestFlight can validate the interface. After approval, app shielding and event-based protection become possible.</p>
+        </div>
       </section>
     </main>
+
+    <footer>
+      <span>Heimdall-Group · Family Protection</span>
+      <span>Risk Control & Family Safety</span>
+    </footer>
   </div>
-  <script src="network.js?v=12"></script>
+  <script src="network.js?v=13"></script>
 </body>
 </html>
