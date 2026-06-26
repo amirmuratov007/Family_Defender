@@ -6,14 +6,14 @@
   <meta name="theme-color" content="#050506">
   <link rel="manifest" href="manifest.webmanifest">
   <title>Heimdall-Group - Family Protection</title>
-  <link rel="stylesheet" href="style.css?v=16">
+  <link rel="stylesheet" href="style.css?v=17">
 </head>
 <body>
   <canvas id="net"></canvas>
   <div class="page">
     <nav class="nav">
       <a class="brand" href="#top" aria-label="Heimdall-Group">
-        <img class="brand-logo" src="heimdall-logo.svg?v=16" alt="Логотип Heimdall">
+        <img class="brand-logo" src="heimdall-logo.svg?v=17" alt="Логотип Heimdall">
         <span><strong>Heimdall-Group</strong><em>Family Protection</em></span>
       </a>
       <div class="nav-actions">
@@ -26,7 +26,7 @@
       <section class="hero">
         <div class="hero-copy">
           <p class="eyebrow">Heimdall-Group · Family Protection</p>
-          <h1>Защита семьи от мошенников в мессенджерах.</h1>
+          <h1>Защита семьи от мошенников в мессенджерах</h1>
           <p class="copy">Продукт для родителей: показывает новые рискованные контакты, опасные переходы из игр в личные чаты, признаки давления, просьбы о кодах, деньгах, адресе, фото и удаленном доступе.</p>
           <div class="actions">
             <a class="btn gold" href="#console">Открыть семейный экран</a>
@@ -34,7 +34,7 @@
           </div>
         </div>
         <div class="hero-mark" aria-hidden="true">
-          <img src="heimdall-logo.svg?v=16" alt="">
+          <img src="heimdall-logo.svg?v=17" alt="">
         </div>
       </section>
 
@@ -56,7 +56,7 @@
 
         <div class="console-grid">
           <aside class="panel">
-            <img class="panel-logo" src="heimdall-logo.svg?v=16" alt="">
+            <img class="panel-logo" src="heimdall-logo.svg?v=17" alt="">
             <h3>Семья пока не добавлена</h3>
             <p>После настройки родителем здесь появятся реальные iPhone, имена и статусы. Выдуманных детей на экране больше нет.</p>
             <a class="btn gold full" href="#install">Добавить первый iPhone</a>
@@ -89,7 +89,7 @@
         <div class="steps">
           <article><span>1</span><h3>Открыть сайт на своем телефоне</h3><p>Родитель входит в семейную панель и создает семейный профиль. Сейчас это веб-версия, дальше нужен нативный iOS-клиент.</p></article>
           <article><span>2</span><h3>Установить Heimdall на iPhone ребенка</h3><p>Через App Store или TestFlight. Ребенок сам ничего не настраивает: родитель включает защиту и подтверждает устройство.</p></article>
-          <article><span>3</span><h3>Включить семейные ограничения iOS</h3><p>Для реальной блокировки приложений и уведомлений нужен Apple Family Controls entitlement. Заявка для Apple уже подготовлена в проекте.</p></article>
+          <article><span>3</span><h3>Дать разрешение Screen Time</h3><p>iOS попросит родителя разрешить Heimdall доступ к Screen Time/Family Controls. Если разрешение недоступно, остается мягкий режим без блокировки приложений.</p></article>
           <article><span>4</span><h3>Получать тревоги</h3><p>Когда появляется риск: новый контакт, переход из игры в мессенджер, просьба о коде, деньгах или секретности.</p></article>
         </div>
       </section>
@@ -100,7 +100,7 @@
         <div class="truth">
           <p>Сайт сам по себе не может тайно читать Telegram на iPhone. Apple и шифрование мессенджеров не дают обычному сайту или приложению незаметно просматривать личные переписки.</p>
           <p>Рабочий продукт делается так: веб-панель для родителей, нативное iOS-приложение для устройства ребенка, Family Controls entitlement от Apple, сервер тревог и push-уведомления.</p>
-          <p>Пока entitlement не одобрен, можно использовать веб-панель как кабинет продукта и TestFlight-сборку для проверки интерфейса. После одобрения появится реальная блокировка приложений и событийная защита.</p>
+          <p>Если Family Controls недоступен или entitlement еще не одобрен Apple, можно использовать веб-панель, TestFlight-сборку, ручную проверку опасных фраз и семейные инструкции. После одобрения Apple и разрешения родителя появится реальная блокировка приложений и событийная защита.</p>
         </div>
       </section>
     </main>
@@ -110,6 +110,6 @@
       <span>Risk Control & Family Safety</span>
     </footer>
   </div>
-  <script src="network.js?v=16"></script>
+  <script src="network.js?v=17"></script>
 </body>
 </html>
