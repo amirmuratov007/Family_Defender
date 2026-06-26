@@ -20,6 +20,7 @@ The product focuses on risky moments:
 - `APPLE_FAMILY_CONTROLS_REQUEST.md` - Apple entitlement request text.
 - `APPLE_DEVELOPER_CHECKLIST_RU.md` - step-by-step Apple setup checklist.
 - `APP_STORE_REVIEW_NOTES.md` - App Store Review notes.
+- `RELEASE_NOTES_20_IMPROVEMENTS_RU.md` - latest package of 20 native-app improvements.
 - `PRIVACY_POLICY.md` - draft privacy policy.
 - `SECURITY_MODEL.md` - production security model.
 

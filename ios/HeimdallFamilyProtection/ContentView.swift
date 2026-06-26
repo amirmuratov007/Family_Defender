@@ -148,6 +148,32 @@ private struct ParentAppView: View {
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
                 MetricCard(title: "Дети", value: "\(alertStore.devices.count)")
                 MetricCard(title: "Тревоги", value: "\(alertStore.alerts.count)")
+                MetricCard(title: "Новые", value: "\(alertStore.unreadAlertCount)")
+                MetricCard(title: "В очереди", value: "\(notifications.pendingNotificationCount)")
+            }
+
+            PanelCard {
+                VStack(alignment: .leading, spacing: 12) {
+                    SectionTitle("Код подключения")
+                    Text(alertStore.pairingCode)
+                        .font(.system(size: 38, weight: .black, design: .rounded))
+                        .tracking(4)
+                        .foregroundStyle(.yellow)
+                        .accessibilityLabel("Код подключения \(alertStore.pairingCode)")
+                    Text("Введите этот код на iPhone ребёнка. В текущем MVP код хранится локально, позже он уйдёт в backend pairing flow.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                    HStack {
+                        Button("Новый код") {
+                            alertStore.regeneratePairingCode()
+                        }
+                        .buttonStyle(.bordered)
+                        Button("Уведомить кодом") {
+                            notifications.sendPairingNotification(code: alertStore.pairingCode)
+                        }
+                        .buttonStyle(.bordered)
+                    }
+                }
             }
 
             PanelCard {
@@ -164,6 +190,16 @@ private struct ParentAppView: View {
                         Button("Тестовая тревога") {
                             let alert = alertStore.addTestAlert()
                             notifications.sendParentRiskNotification(alert: alert)
+                        }
+                        .buttonStyle(.bordered)
+                    }
+                    HStack {
+                        Button("Обновить статус") {
+                            notifications.refreshStatus()
+                        }
+                        .buttonStyle(.bordered)
+                        Button("Очистить уведомления") {
+                            notifications.clearDeliveredAndPending()
                         }
                         .buttonStyle(.bordered)
                     }
@@ -190,8 +226,14 @@ private struct ParentAppView: View {
                         EmptyLine(title: "Тревог нет", text: "Когда риск станет высоким, родитель увидит уведомление и запись здесь.")
                     } else {
                         ForEach(alertStore.alerts) { alert in
-                            AlertRow(alert: alert)
+                            AlertRow(alert: alert) {
+                                alertStore.acknowledgeAlert(alert)
+                            }
                         }
+                        Button("Очистить ленту") {
+                            alertStore.clearAlerts()
+                        }
+                        .buttonStyle(.bordered)
                     }
                 }
             }
@@ -210,8 +252,16 @@ private struct ParentAppView: View {
                         familyShield.applyBaseRules()
                     }
                     .buttonStyle(.bordered)
+                    Button("Сбросить локальный тест", role: .destructive) {
+                        alertStore.reset()
+                        notifications.clearDeliveredAndPending()
+                    }
+                    .buttonStyle(.bordered)
                 }
             }
+        }
+        .onAppear {
+            notifications.refreshStatus()
         }
     }
 }
@@ -223,8 +273,14 @@ private struct ChildAppView: View {
     @State private var childName = "Артур"
     @State private var deviceName = "iPhone ребёнка"
     @State private var trustedAdult = "Папа"
+    @State private var trustedAdultPhone = ""
+    @State private var pairingCode = ""
+    @State private var connectionStatus = ""
     @State private var text = "Перейдём в Telegram. Родителям не говори. Срочно открой банк и пришли код из СМС."
     @State private var result = RiskResult.empty
+
+    private let dangerousExample = "Перейдём в Telegram. Родителям не говори. Срочно открой банк и пришли код из СМС."
+    private let safeExample = "Тренировка завтра в 16:00. Домашнее задание скину в школьный чат."
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -236,16 +292,37 @@ private struct ChildAppView: View {
             PanelCard {
                 VStack(alignment: .leading, spacing: 12) {
                     SectionTitle("Подключение")
+                    Text("Введите код подключения, который родитель видит в своей панели.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                    TextField("Код подключения", text: $pairingCode)
+                        .textInputAutocapitalization(.characters)
+                        .textFieldStyle(.roundedBorder)
                     TextField("Имя ребёнка", text: $childName)
                         .textFieldStyle(.roundedBorder)
                     TextField("Устройство", text: $deviceName)
                         .textFieldStyle(.roundedBorder)
                     TextField("Доверенный взрослый", text: $trustedAdult)
                         .textFieldStyle(.roundedBorder)
+                    TextField("Телефон взрослого", text: $trustedAdultPhone)
+                        .keyboardType(.phonePad)
+                        .textFieldStyle(.roundedBorder)
                     Button("Подключить к родителю") {
-                        alertStore.connectChild(childName: childName, deviceName: deviceName, trustedAdult: trustedAdult)
+                        let connected = alertStore.connectChild(
+                            childName: childName,
+                            deviceName: deviceName,
+                            trustedAdult: trustedAdult,
+                            trustedAdultPhone: trustedAdultPhone,
+                            enteredPairingCode: pairingCode
+                        )
+                        connectionStatus = connected ? "Подключено к родительскому профилю." : "Код не совпадает. Проверьте код у родителя."
                     }
                     .buttonStyle(.borderedProminent)
+                    if !connectionStatus.isEmpty {
+                        Text(connectionStatus)
+                            .font(.footnote)
+                            .foregroundStyle(connectionStatus.hasPrefix("Подключено") ? .green : .red)
+                    }
                 }
             }
 
@@ -259,12 +336,34 @@ private struct ChildAppView: View {
                         Label("Сообщить родителю", systemImage: "checkmark.shield")
                     }
                     .buttonStyle(.borderedProminent)
+                    if let callURL = alertStore.firstTrustedAdultCallURL {
+                        Link(destination: callURL) {
+                            Label("Позвонить взрослому", systemImage: "phone.fill")
+                        }
+                        .buttonStyle(.bordered)
+                    } else {
+                        Text("Добавьте телефон взрослого, чтобы здесь появилась кнопка звонка.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
 
             PanelCard {
                 VStack(alignment: .leading, spacing: 12) {
                     SectionTitle("Проверить сообщение")
+                    HStack {
+                        Button("Опасный пример") {
+                            text = dangerousExample
+                            result = .empty
+                        }
+                        .buttonStyle(.bordered)
+                        Button("Безопасный пример") {
+                            text = safeExample
+                            result = .empty
+                        }
+                        .buttonStyle(.bordered)
+                    }
                     TextEditor(text: $text)
                         .frame(minHeight: 150)
                         .scrollContentBackground(.hidden)
@@ -291,6 +390,12 @@ private struct ChildAppView: View {
                     RiskResultView(result: result)
                 }
             }
+        }
+        .onAppear {
+            if pairingCode.isEmpty {
+                pairingCode = alertStore.pairingCode
+            }
+            notifications.refreshStatus()
         }
     }
 }
@@ -377,6 +482,9 @@ private struct DeviceRow: View {
             Text("\(device.deviceName) · \(device.trustedAdult)")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
+            Text("Код: \(device.pairingCode) · Обновлено \(device.lastSeen, style: .time)")
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
         .padding(.vertical, 8)
     }
@@ -384,6 +492,7 @@ private struct DeviceRow: View {
 
 private struct AlertRow: View {
     let alert: FamilyAlert
+    let acknowledge: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -402,6 +511,19 @@ private struct AlertRow: View {
             Text(alert.createdAt, style: .time)
                 .font(.caption)
                 .foregroundStyle(.secondary)
+            Text(alert.summary)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            if alert.isAcknowledged {
+                Text("Просмотрено")
+                    .font(.caption.bold())
+                    .foregroundStyle(.green)
+            } else {
+                Button("Отметить просмотренной") {
+                    acknowledge()
+                }
+                .buttonStyle(.bordered)
+            }
         }
         .padding(.vertical, 8)
     }
