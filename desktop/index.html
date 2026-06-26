@@ -9,6 +9,19 @@
 <body>
   <div class="space-network" aria-hidden="true"></div>
 
+  <section id="languageGate" class="language-gate" aria-label="Language selection">
+    <div class="language-card">
+      <img src="../heimdall-logo.svg" alt="Heimdall">
+      <p class="eyebrow">HEIMDALL-GROUP</p>
+      <h1>Family Defender</h1>
+      <p class="language-copy">Выберите язык / Choose language</p>
+      <div class="language-actions">
+        <button class="primary" data-language="ru">Русский</button>
+        <button data-language="en">English</button>
+      </div>
+    </div>
+  </section>
+
   <main class="shell">
     <header class="topbar">
       <div class="brand">
@@ -19,67 +32,68 @@
         </div>
       </div>
       <div class="top-actions">
-        <button id="resetDemo" class="ghost">Сбросить тест</button>
-        <button id="enableNotifications" class="primary">Уведомления</button>
+        <button id="languageSwitch" class="ghost">EN</button>
+        <button id="resetDemo" class="ghost" data-i18n="resetDemo">Сбросить тест</button>
+        <button id="enableNotifications" class="primary" data-i18n="notifications">Уведомления</button>
       </div>
     </header>
 
     <section class="status-strip">
       <div>
         <span class="value" id="childrenCount">0</span>
-        <span>детей</span>
+        <span data-i18n="metricChildren">детей</span>
       </div>
       <div>
         <span class="value" id="alertCount">0</span>
-        <span>тревог</span>
+        <span data-i18n="metricAlerts">тревог</span>
       </div>
       <div>
         <span class="value" id="unreadCount">0</span>
-        <span>новых</span>
+        <span data-i18n="metricUnread">новых</span>
       </div>
       <div>
         <span class="value" id="zoneCount">0</span>
-        <span>геозон</span>
+        <span data-i18n="metricZones">геозон</span>
       </div>
     </section>
 
     <section class="workspace">
       <article class="panel parent-panel">
         <div class="panel-title">
-          <span>Родитель</span>
+          <span data-i18n="parentRole">Родитель</span>
           <strong id="familyStatus">Ожидаю подключение ребёнка</strong>
         </div>
 
         <div class="section">
-          <h2>Код подключения</h2>
+          <h2 data-i18n="pairingCode">Код подключения</h2>
           <div class="pair-code" id="pairingCode"></div>
           <div class="button-row">
-            <button id="newCode">Новый код</button>
-            <button id="copyCode">Копировать</button>
+            <button id="newCode" data-i18n="newCode">Новый код</button>
+            <button id="copyCode" data-i18n="copyCode">Копировать</button>
           </div>
         </div>
 
         <div class="section">
-          <h2>Безопасные геозоны</h2>
+          <h2 data-i18n="safeZones">Безопасные геозоны</h2>
           <div class="zone-form">
-            <input id="zoneName" placeholder="Название" value="Дом">
-            <input id="zoneLat" placeholder="Широта" value="55.75580">
-            <input id="zoneLng" placeholder="Долгота" value="37.61730">
-            <input id="zoneRadius" placeholder="Радиус, м" value="600">
-            <button id="addZone" class="primary">Добавить зону</button>
+            <input id="zoneName" placeholder="Название" value="Дом" data-i18n-placeholder="zoneName">
+            <input id="zoneLat" placeholder="Широта" value="55.75580" data-i18n-placeholder="latitude">
+            <input id="zoneLng" placeholder="Долгота" value="37.61730" data-i18n-placeholder="longitude">
+            <input id="zoneRadius" placeholder="Радиус, м" value="600" data-i18n-placeholder="radius">
+            <button id="addZone" class="primary" data-i18n="addZone">Добавить зону</button>
           </div>
           <div id="zones" class="list"></div>
         </div>
 
         <div class="section">
-          <h2>Дети</h2>
+          <h2 data-i18n="childrenTitle">Дети</h2>
           <div id="children" class="list muted-line">Пока нет подключённых детей.</div>
         </div>
 
         <div class="section grow">
           <div class="section-head">
-            <h2>Лента тревог</h2>
-            <button id="clearAlerts" class="ghost small">Очистить</button>
+            <h2 data-i18n="alertFeed">Лента тревог</h2>
+            <button id="clearAlerts" class="ghost small" data-i18n="clear">Очистить</button>
           </div>
           <div id="alerts" class="alert-list"></div>
         </div>
@@ -87,46 +101,46 @@
 
       <article class="panel child-panel">
         <div class="panel-title">
-          <span>Симулятор ребёнка</span>
+          <span data-i18n="childSimulator">Симулятор ребёнка</span>
           <strong id="childStatus">Не подключён</strong>
         </div>
 
         <div class="section">
-          <h2>Подключение</h2>
+          <h2 data-i18n="connection">Подключение</h2>
           <div class="connect-grid">
-            <input id="childCode" placeholder="Код родителя">
-            <input id="childName" value="Артур" placeholder="Имя ребёнка">
-            <input id="deviceName" value="Windows test device" placeholder="Устройство">
-            <input id="adultPhone" value="+7 999 000-00-00" placeholder="Телефон взрослого">
+            <input id="childCode" placeholder="Код родителя" data-i18n-placeholder="childCode">
+            <input id="childName" value="Артур" placeholder="Имя ребёнка" data-i18n-placeholder="childName">
+            <input id="deviceName" value="Windows test device" placeholder="Устройство" data-i18n-placeholder="deviceName">
+            <input id="adultPhone" value="+7 999 000-00-00" placeholder="Телефон взрослого" data-i18n-placeholder="adultPhone">
           </div>
           <div class="button-row">
-            <button id="connectChild" class="primary">Подключить</button>
-            <button id="markSafe">Я в безопасности</button>
+            <button id="connectChild" class="primary" data-i18n="connect">Подключить</button>
+            <button id="markSafe" data-i18n="markSafe">Я в безопасности</button>
           </div>
           <p id="connectMessage" class="hint"></p>
         </div>
 
         <div class="section">
-          <h2>Проверка сообщения</h2>
+          <h2 data-i18n="messageCheck">Проверка сообщения</h2>
           <div class="button-row">
-            <button id="dangerExample">Опасный пример</button>
-            <button id="safeExample">Безопасный пример</button>
+            <button id="dangerExample" data-i18n="dangerExample">Опасный пример</button>
+            <button id="safeExample" data-i18n="safeExample">Безопасный пример</button>
           </div>
           <textarea id="messageText" rows="5"></textarea>
           <div class="button-row">
-            <button id="analyzeMessage" class="primary">Проверить риск</button>
-            <button id="clearMessage">Очистить</button>
+            <button id="analyzeMessage" class="primary" data-i18n="analyzeRisk">Проверить риск</button>
+            <button id="clearMessage" data-i18n="clear">Очистить</button>
           </div>
           <div id="riskResult" class="risk-result"></div>
         </div>
 
         <div class="section">
-          <h2>Геолокация без телефона</h2>
-          <p class="hint">Кнопки ниже имитируют, что детский iPhone прислал координаты.</p>
+          <h2 data-i18n="geoWithoutPhone">Геолокация без телефона</h2>
+          <p class="hint" data-i18n="geoHint">Кнопки ниже имитируют, что детский iPhone прислал координаты.</p>
           <div class="button-row">
-            <button data-place="home">Дом</button>
-            <button data-place="school">Школа</button>
-            <button data-place="unknown" class="danger">Незнакомое место</button>
+            <button data-place="home" data-i18n="placeHome">Дом</button>
+            <button data-place="school" data-i18n="placeSchool">Школа</button>
+            <button data-place="unknown" class="danger" data-i18n="placeUnknown">Незнакомое место</button>
           </div>
           <div id="locationResult" class="location-result"></div>
         </div>

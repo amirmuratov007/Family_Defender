@@ -25,7 +25,7 @@ body {
     radial-gradient(circle at 82% 15%, rgba(245, 200, 75, 0.12), transparent 24%),
     linear-gradient(135deg, #07081a 0%, #061423 48%, #040408 100%);
   color: var(--text);
-  font-family: "Segoe UI Variable", "Segoe UI", Arial, sans-serif;
+  font-family: "Segoe UI Variable Text", "Segoe UI", system-ui, Arial, sans-serif;
 }
 
 button,
@@ -42,6 +42,8 @@ button {
   color: var(--text);
   cursor: pointer;
   font-weight: 700;
+  line-height: 1.15;
+  white-space: nowrap;
 }
 
 button:hover {
@@ -105,6 +107,67 @@ p {
     radial-gradient(circle at 68% 18%, var(--gold) 0 2px, transparent 3px),
     radial-gradient(circle at 87% 61%, var(--cyan) 0 2px, transparent 3px),
     radial-gradient(circle at 44% 83%, #fff 0 1px, transparent 2px);
+}
+
+.language-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding: 32px;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(22, 217, 255, 0.18), transparent 28%),
+    radial-gradient(circle at 42% 48%, rgba(245, 200, 75, 0.12), transparent 26%),
+    rgba(3, 5, 14, 0.88);
+  backdrop-filter: blur(14px);
+}
+
+.language-gate[hidden] {
+  display: none;
+}
+
+.language-card {
+  width: min(520px, calc(100vw - 64px));
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  text-align: center;
+}
+
+.language-card img {
+  width: min(190px, 36vw);
+  height: auto;
+  filter: drop-shadow(0 0 18px rgba(245, 200, 75, 0.38));
+}
+
+.language-card .eyebrow {
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 850;
+  letter-spacing: 1.8px;
+}
+
+.language-card h1 {
+  font-size: 42px;
+  line-height: 1;
+}
+
+.language-copy {
+  color: var(--muted);
+  font-size: 17px;
+  font-weight: 650;
+}
+
+.language-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.language-actions button {
+  min-width: 140px;
+  padding: 12px 18px;
 }
 
 .shell {

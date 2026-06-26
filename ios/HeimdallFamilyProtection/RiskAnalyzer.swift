@@ -55,6 +55,7 @@ enum RiskAnalyzer {
         ("code", "Код или доступ", 30, ["code", "password", "sms", "код", "пароль", "смс", "sms"]),
         ("remote_access", "Удалённый доступ", 38, ["anydesk", "rustdesk", "teamviewer", "удалённый доступ", "экран", "установи приложение"]),
         ("authority", "Ложный авторитет", 20, ["police", "security service", "bank security", "полиция", "фсб", "служба безопасности"]),
+        ("location_request", "Запрос координат", 70, ["coordinates", "coordinate", "send location", "share location", "location pin", "gps", "координат", "локацию", "геолокацию", "геопозицию", "местоположение", "пришли где ты", "скинь где ты"]),
         ("personal_data", "Личные данные", 18, ["address", "photo", "passport", "адрес", "фото", "паспорт", "документ", "геолокация"])
     ]
 
@@ -71,7 +72,7 @@ enum RiskAnalyzer {
         }
 
         let hasSecrecy = matches.contains { $0.id == "secrecy" }
-        let hasAction = matches.contains { ["money", "code", "remote_access", "personal_data"].contains($0.id) }
+        let hasAction = matches.contains { ["money", "code", "remote_access", "location_request", "personal_data"].contains($0.id) }
         let hasMigration = matches.contains { $0.id == "private_migration" }
         if hasSecrecy && hasAction { score += 18 }
         if hasMigration && hasAction { score += 10 }
