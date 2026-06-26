@@ -4,21 +4,24 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#050506">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Heimdall">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="manifest.webmanifest">
   <title>Heimdall-Group - Family Protection</title>
-  <link rel="stylesheet" href="style.css?v=17">
+  <link rel="stylesheet" href="style.css?v=18">
 </head>
 <body>
   <canvas id="net"></canvas>
   <div class="page">
     <nav class="nav">
       <a class="brand" href="#top" aria-label="Heimdall-Group">
-        <img class="brand-logo" src="heimdall-logo.svg?v=17" alt="Heimdall logo">
+        <img class="brand-logo" src="heimdall-logo.svg?v=18" alt="Heimdall logo">
         <span><strong>Heimdall-Group</strong><em>Family Protection</em></span>
       </a>
       <div class="nav-actions">
         <a class="btn ghost" href="ru.html">RU</a>
-        <a class="btn gold" href="#install">Connect iPhone</a>
+        <a class="btn gold" href="#home-test">Start test</a>
       </div>
     </nav>
 
@@ -29,12 +32,12 @@
           <h1>Family protection against messenger scams.</h1>
           <p class="copy">A parent product for risky new contacts, game-chat to private-message migration, pressure, secrecy, codes, money, addresses, photos and remote access attempts.</p>
           <div class="actions">
-            <a class="btn gold" href="#console">Open family console</a>
+            <a class="btn gold" href="#home-test">Check a message</a>
             <a class="btn ghost" href="#how">How it works</a>
           </div>
         </div>
         <div class="hero-mark" aria-hidden="true">
-          <img src="heimdall-logo.svg?v=17" alt="">
+          <img src="heimdall-logo.svg?v=18" alt="">
         </div>
       </section>
 
@@ -44,27 +47,27 @@
             <p class="eyebrow">Family screen</p>
             <h2>Protection console</h2>
           </div>
-          <a class="btn gold" href="#install">Add first iPhone</a>
+          <a class="btn gold" href="#home-test">Start home test</a>
         </div>
 
         <div class="kpis">
-          <article><span>0</span><strong>devices connected</strong></article>
-          <article><span>Not selected</span><strong>family profile</strong></article>
+          <article><span data-family-device-count>0</span><strong>devices connected</strong></article>
+          <article><span data-family-profile>Not selected</span><strong>family profile</strong></article>
           <article><span>5</span><strong>base rules ready</strong></article>
           <article><span>24/7</span><strong>alert readiness</strong></article>
         </div>
 
         <div class="console-grid">
           <aside class="panel">
-            <img class="panel-logo" src="heimdall-logo.svg?v=17" alt="">
-            <h3>No family members added yet</h3>
-            <p>Real iPhones, names and statuses will appear here only after parent setup. There are no fake children on this screen.</p>
-            <a class="btn gold full" href="#install">Add first iPhone</a>
+            <img class="panel-logo" src="heimdall-logo.svg?v=18" alt="">
+            <h3 data-family-title>No family members added yet</h3>
+            <p data-family-copy>Real iPhones, names and statuses will appear here only after parent setup. There are no fake children on this screen.</p>
+            <a class="btn gold full" href="#home-test">Add first iPhone</a>
           </aside>
 
           <section class="panel">
             <h3>Connected devices</h3>
-            <div class="empty-state">
+            <div class="empty-state" data-device-list>
               <strong>No connected iPhones</strong>
               <p>The device will appear here after Heimdall is installed and approved by the parent.</p>
             </div>
@@ -79,6 +82,64 @@
               <div><b>Codes, bank, address, photos</b><span>They ask for a code, transfer, card, location, documents or private photos.</span></div>
               <div><b>Remote access</b><span>They push AnyDesk, RustDesk, TeamViewer or a similar app installation.</span></div>
             </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="section lab" id="home-test">
+        <p class="eyebrow">Home test</p>
+        <h2>Check a scam scenario in one minute</h2>
+        <div class="lab-grid">
+          <form class="panel form-panel" data-setup-form>
+            <h3>1. Connect the first iPhone</h3>
+            <p>This is a local browser test. It does not send the child name or trusted adult to the server; it lets you walk through the parent flow before Apple/TestFlight.</p>
+            <label>
+              <span>Child name</span>
+              <input name="childName" autocomplete="off" placeholder="For example, Arthur">
+            </label>
+            <label>
+              <span>Device</span>
+              <input name="deviceName" autocomplete="off" placeholder="Child iPhone">
+            </label>
+            <label>
+              <span>Trusted adult</span>
+              <input name="trustedAdult" autocomplete="off" placeholder="Mom, dad or phone number">
+            </label>
+            <button class="btn gold" type="submit">Create local test</button>
+            <p class="status-line" data-setup-status>No local profile yet.</p>
+          </form>
+
+          <section class="panel form-panel risk-checker">
+            <h3>2. Check a suspicious message</h3>
+            <p>Paste a chat phrase. The server returns only risk, reasons and action; full message text is not stored in the alert feed.</p>
+            <label>
+              <span>Message</span>
+              <textarea id="riskText" rows="7">Move to Telegram. Do not tell your parents. Open the bank app right now and send the SMS code.</textarea>
+            </label>
+            <div class="inline-actions">
+              <button class="btn gold" id="analyzeRiskBtn" type="button">Check risk</button>
+              <button class="btn ghost" id="loadSafeBtn" type="button">Safe example</button>
+            </div>
+            <div class="risk-result" data-risk-result>
+              <div>
+                <span data-risk-score>0</span>
+                <strong data-risk-level>Not checked</strong>
+              </div>
+              <p data-risk-action>Press “Check risk” to see Heimdall's decision.</p>
+              <div class="chips" data-risk-matches></div>
+            </div>
+          </section>
+
+          <section class="panel form-panel">
+            <h3>3. Alert feed</h3>
+            <p>Parents see only minimal risk signals: level, reasons and time.</p>
+            <div class="alert-feed" data-alert-feed>
+              <div class="empty-state">
+                <strong>No alerts yet</strong>
+                <p>High risk checks will appear here.</p>
+              </div>
+            </div>
+            <button class="btn ghost" data-clear-local type="button">Reset local test</button>
           </section>
         </div>
       </section>
@@ -110,6 +171,7 @@
       <span>Risk Control & Family Safety</span>
     </footer>
   </div>
-  <script src="network.js?v=17"></script>
+  <script src="network.js?v=18"></script>
+  <script src="risk.js?v=18"></script>
 </body>
 </html>

@@ -1,5 +1,11 @@
 const canvas = document.querySelector("#net");
 
+if ("serviceWorker" in navigator) {
+  addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+  });
+}
+
 if (canvas) {
   const ctx = canvas.getContext("2d");
   let points = [];

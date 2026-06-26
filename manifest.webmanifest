@@ -2,7 +2,7 @@
   "name": "Heimdall Family Protection",
   "short_name": "Heimdall",
   "description": "Family Protection by Heimdall-Group",
-  "start_url": "./en.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#050506",
   "theme_color": "#050506",

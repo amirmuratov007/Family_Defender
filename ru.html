@@ -4,21 +4,24 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#050506">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Heimdall">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="manifest.webmanifest">
   <title>Heimdall-Group - Family Protection</title>
-  <link rel="stylesheet" href="style.css?v=17">
+  <link rel="stylesheet" href="style.css?v=18">
 </head>
 <body>
   <canvas id="net"></canvas>
   <div class="page">
     <nav class="nav">
       <a class="brand" href="#top" aria-label="Heimdall-Group">
-        <img class="brand-logo" src="heimdall-logo.svg?v=17" alt="Логотип Heimdall">
+        <img class="brand-logo" src="heimdall-logo.svg?v=18" alt="Логотип Heimdall">
         <span><strong>Heimdall-Group</strong><em>Family Protection</em></span>
       </a>
       <div class="nav-actions">
         <a class="btn ghost" href="en.html">EN</a>
-        <a class="btn gold" href="#install">Подключить iPhone</a>
+        <a class="btn gold" href="#home-test">Начать тест</a>
       </div>
     </nav>
 
@@ -29,12 +32,12 @@
           <h1>Защита семьи от мошенников в мессенджерах</h1>
           <p class="copy">Продукт для родителей: показывает новые рискованные контакты, опасные переходы из игр в личные чаты, признаки давления, просьбы о кодах, деньгах, адресе, фото и удаленном доступе.</p>
           <div class="actions">
-            <a class="btn gold" href="#console">Открыть семейный экран</a>
+            <a class="btn gold" href="#home-test">Проверить сообщение</a>
             <a class="btn ghost" href="#how">Как пользоваться</a>
           </div>
         </div>
         <div class="hero-mark" aria-hidden="true">
-          <img src="heimdall-logo.svg?v=17" alt="">
+          <img src="heimdall-logo.svg?v=18" alt="">
         </div>
       </section>
 
@@ -44,27 +47,27 @@
             <p class="eyebrow">Семейный экран</p>
             <h2>Панель защиты</h2>
           </div>
-          <a class="btn gold" href="#install">Добавить первый iPhone</a>
+          <a class="btn gold" href="#home-test">Начать домашний тест</a>
         </div>
 
         <div class="kpis">
-          <article><span>0</span><strong>устройств подключено</strong></article>
-          <article><span>Не выбран</span><strong>семейный профиль</strong></article>
+          <article><span data-family-device-count>0</span><strong>устройств подключено</strong></article>
+          <article><span data-family-profile>Не выбран</span><strong>семейный профиль</strong></article>
           <article><span>5</span><strong>базовых правил готово</strong></article>
           <article><span>24/7</span><strong>готовность к тревогам</strong></article>
         </div>
 
         <div class="console-grid">
           <aside class="panel">
-            <img class="panel-logo" src="heimdall-logo.svg?v=17" alt="">
-            <h3>Семья пока не добавлена</h3>
-            <p>После настройки родителем здесь появятся реальные iPhone, имена и статусы. Выдуманных детей на экране больше нет.</p>
-            <a class="btn gold full" href="#install">Добавить первый iPhone</a>
+            <img class="panel-logo" src="heimdall-logo.svg?v=18" alt="">
+            <h3 data-family-title>Семья пока не добавлена</h3>
+            <p data-family-copy>После настройки родителем здесь появятся реальные iPhone, имена и статусы. Выдуманных детей на экране больше нет.</p>
+            <a class="btn gold full" href="#home-test">Добавить первый iPhone</a>
           </aside>
 
           <section class="panel">
             <h3>Подключенные устройства</h3>
-            <div class="empty-state">
+            <div class="empty-state" data-device-list>
               <strong>Нет подключенных iPhone</strong>
               <p>Устройство появится здесь после установки Heimdall и подтверждения родителем.</p>
             </div>
@@ -79,6 +82,64 @@
               <div><b>Коды, банк, адрес, фото</b><span>Просит код, перевод, карту, геолокацию, документы или личные фотографии.</span></div>
               <div><b>Удаленный доступ</b><span>Уговаривает поставить AnyDesk, RustDesk, TeamViewer или похожее приложение.</span></div>
             </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="section lab" id="home-test">
+        <p class="eyebrow">Домашний тест</p>
+        <h2>Проверьте сценарий мошенника за минуту</h2>
+        <div class="lab-grid">
+          <form class="panel form-panel" data-setup-form>
+            <h3>1. Подключить первый iPhone</h3>
+            <p>Это локальный тест в вашем браузере. Он не отправляет имя ребёнка или телефон на сервер и нужен, чтобы пройти родительский сценарий до Apple/TestFlight.</p>
+            <label>
+              <span>Имя ребёнка</span>
+              <input name="childName" autocomplete="off" placeholder="Например, Артур">
+            </label>
+            <label>
+              <span>Устройство</span>
+              <input name="deviceName" autocomplete="off" placeholder="iPhone ребёнка">
+            </label>
+            <label>
+              <span>Доверенный взрослый</span>
+              <input name="trustedAdult" autocomplete="off" placeholder="Мама, папа или номер телефона">
+            </label>
+            <button class="btn gold" type="submit">Создать локальный тест</button>
+            <p class="status-line" data-setup-status>Локальный профиль ещё не создан.</p>
+          </form>
+
+          <section class="panel form-panel risk-checker">
+            <h3>2. Проверить подозрительное сообщение</h3>
+            <p>Вставьте фразу из чата. Сервер вернёт только риск, причины и действие; полный текст не сохраняется в ленте тревог.</p>
+            <label>
+              <span>Сообщение</span>
+              <textarea id="riskText" rows="7">Перейдём в Telegram. Родителям не говори. Срочно открой банк и пришли код из СМС.</textarea>
+            </label>
+            <div class="inline-actions">
+              <button class="btn gold" id="analyzeRiskBtn" type="button">Проверить риск</button>
+              <button class="btn ghost" id="loadSafeBtn" type="button">Безопасный пример</button>
+            </div>
+            <div class="risk-result" data-risk-result>
+              <div>
+                <span data-risk-score>0</span>
+                <strong data-risk-level>Не проверено</strong>
+              </div>
+              <p data-risk-action>Нажмите «Проверить риск», чтобы увидеть решение Heimdall.</p>
+              <div class="chips" data-risk-matches></div>
+            </div>
+          </section>
+
+          <section class="panel form-panel">
+            <h3>3. Лента тревог</h3>
+            <p>Здесь остаются только минимальные риск-сигналы для родителя: уровень, причины и время проверки.</p>
+            <div class="alert-feed" data-alert-feed>
+              <div class="empty-state">
+                <strong>Тревог пока нет</strong>
+                <p>Высокий риск появится здесь после проверки сообщения.</p>
+              </div>
+            </div>
+            <button class="btn ghost" data-clear-local type="button">Сбросить локальный тест</button>
           </section>
         </div>
       </section>
@@ -110,6 +171,7 @@
       <span>Risk Control & Family Safety</span>
     </footer>
   </div>
-  <script src="network.js?v=17"></script>
+  <script src="network.js?v=18"></script>
+  <script src="risk.js?v=18"></script>
 </body>
 </html>

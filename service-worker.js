@@ -1,4 +1,4 @@
-const CACHE_NAME = "heimdall-family-protection-v17";
+const CACHE_NAME = "heimdall-family-protection-v18";
 const ASSETS = [
   "./",
   "./index.html",
@@ -6,6 +6,7 @@ const ASSETS = [
   "./ru.html",
   "./style.css",
   "./network.js",
+  "./risk.js",
   "./manifest.webmanifest",
   "./heimdall-logo.svg",
   "./shield-icon.svg"
@@ -25,6 +26,11 @@ self.addEventListener("activate", event => {
 });
 
 self.addEventListener("fetch", event => {
+  if (event.request.method !== "GET") {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
   event.respondWith(
     fetch(event.request)
       .then(response => {
