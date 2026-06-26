@@ -81,7 +81,7 @@ private struct RoleSelectionView: View {
                     onSelect(role)
                 } label: {
                     HStack(spacing: 14) {
-                        BrandLogo(size: 38)
+                        BrandLogo(size: 30)
                         VStack(alignment: .leading, spacing: 4) {
                             Text(role.title)
                                 .font(.system(.headline, design: .rounded).weight(.semibold))
@@ -110,7 +110,7 @@ private struct RoleHeader: View {
 
     var body: some View {
         HStack(alignment: .center, spacing: 14) {
-            BrandLogo(size: 44)
+            BrandLogo(size: 34)
             VStack(alignment: .leading, spacing: 2) {
                 Text("Heimdall")
                     .font(.system(.title2, design: .rounded).weight(.semibold))
@@ -558,7 +558,7 @@ private struct HeaderBlock: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
-            BrandLogo(size: 48)
+            BrandLogo(size: 38)
             VStack(alignment: .leading, spacing: 7) {
                 Text("HEIMDALL-GROUP")
                     .font(.system(size: 11, weight: .semibold, design: .rounded))
@@ -629,7 +629,7 @@ private struct SectionTitle: View {
 
     var body: some View {
         HStack(spacing: 8) {
-            BrandLogo(size: 22)
+            BrandLogo(size: 16)
             Text(text)
                 .font(.system(.title3, design: .rounded).weight(.semibold))
                 .foregroundStyle(.white)
