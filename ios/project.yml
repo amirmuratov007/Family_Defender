@@ -1,0 +1,108 @@
+name: HeimdallFamilyProtection
+options:
+  createIntermediateGroups: true
+  deploymentTarget:
+    iOS: "16.0"
+settings:
+  base:
+    CODE_SIGN_STYLE: Automatic
+    CURRENT_PROJECT_VERSION: 1
+    DEVELOPMENT_TEAM: ""
+    MARKETING_VERSION: 0.1.0
+    SWIFT_VERSION: 5.9
+    TARGETED_DEVICE_FAMILY: 1
+targets:
+  HeimdallFamilyProtection:
+    type: application
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources:
+      - HeimdallFamilyProtection
+    info:
+      path: HeimdallFamilyProtection/Info.plist
+      properties:
+        CFBundleDisplayName: Heimdall
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        UILaunchScreen: {}
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+    entitlements:
+      path: HeimdallFamilyProtection/HeimdallFamilyProtection.entitlements
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.heimdallgroup.familyprotection
+    dependencies:
+      - target: ShareExtension
+        embed: true
+      - target: DeviceActivityMonitor
+        embed: true
+      - target: ShieldConfiguration
+        embed: true
+
+  ShareExtension:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources:
+      - ShareExtension
+    info:
+      path: ShareExtension/Info.plist
+      properties:
+        CFBundleDisplayName: Heimdall Share
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.share-services
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).ShareViewController
+          NSExtensionAttributes:
+            NSExtensionActivationRule:
+              NSExtensionActivationSupportsText: true
+              NSExtensionActivationSupportsWebURLWithMaxCount: 1
+    entitlements:
+      path: ShareExtension/ShareExtension.entitlements
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.heimdallgroup.familyprotection.share
+
+  DeviceActivityMonitor:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources:
+      - DeviceActivityMonitor
+    info:
+      path: DeviceActivityMonitor/Info.plist
+      properties:
+        CFBundleDisplayName: Heimdall Monitor
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.deviceactivity.monitor-extension
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).MonitorExtension
+    entitlements:
+      path: DeviceActivityMonitor/DeviceActivityMonitor.entitlements
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.heimdallgroup.familyprotection.monitor
+
+  ShieldConfiguration:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources:
+      - ShieldConfiguration
+    info:
+      path: ShieldConfiguration/Info.plist
+      properties:
+        CFBundleDisplayName: Heimdall Shield
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.ManagedSettingsUI.shield-configuration-service
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).ShieldConfigurationExtension
+    entitlements:
+      path: ShieldConfiguration/ShieldConfiguration.entitlements
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.heimdallgroup.familyprotection.shield

@@ -1,22 +1,36 @@
-# Heimdall iOS Starter
+# Heimdall iOS
 
-This folder is a production-oriented starter for the native iOS app.
+Это стартовая iOS-версия Heimdall Family Defender: один app shell с режимом родителя и режимом ребёнка.
 
-It is not a complete Xcode project yet. After Apple Developer Program enrollment, create an Xcode iOS app and copy these files into the matching targets.
+## Что уже есть
 
-## Product Roles
+- Родительская панель: подключение Family Controls, базовые правила, доверенные взрослые и будущая лента тревог.
+- Детский режим: проверка подозрительного сообщения, антискам-пауза и связь с доверенным взрослым.
+- Share Extension: точка входа для текста, который пользователь явно отправляет в Heimdall через Share Sheet.
+- Device Activity Monitor Extension: основа для риск-событий Screen Time.
+- Shield Configuration Extension: русский экран защитной паузы.
+- `project.yml` для генерации Xcode-проекта через XcodeGen.
 
-The starter app now has two modes:
+## Как открыть на Mac
 
-- Parent mode: family setup, trusted adults, alert feed, Screen Time / Family Controls authorization, and rule management.
-- Child mode: suspicious-message check, anti-scam pause, and a call-to-trusted-adult action.
+1. Установить Xcode.
+2. Установить XcodeGen:
 
-This can ship as one app with role selection for the MVP, or later split into two apps:
+   ```sh
+   brew install xcodegen
+   ```
 
-- Heimdall Parent
-- Heimdall Child
+3. Сгенерировать проект:
 
-## Targets to Create
+   ```sh
+   cd ios
+   xcodegen generate
+   open HeimdallFamilyProtection.xcodeproj
+   ```
+
+4. В Xcode выбрать свою Apple Developer Team для всех target.
+
+## Targets
 
 1. Main app
    Bundle ID: `com.heimdallgroup.familyprotection`
@@ -30,35 +44,38 @@ This can ship as one app with role selection for the MVP, or later split into tw
 4. Shield Configuration Extension
    Bundle ID: `com.heimdallgroup.familyprotection.shield`
 
-5. Device Activity Report Extension
-   Bundle ID: `com.heimdallgroup.familyprotection.report`
+Device Activity Report Extension можно добавить следующим target, когда понадобится экран статистики.
 
 ## Required Apple Capabilities
 
-- Family Controls
-- App Groups
-- Push Notifications
-
-Suggested app group:
-
-`group.com.heimdallgroup.familyprotection`
-
-## Screen Time Frameworks
-
-The code references:
-
-- FamilyControls
-- ManagedSettings
-- DeviceActivity
-
-These APIs require Apple approval for distribution.
+- App Groups: `group.com.heimdallgroup.familyprotection`
+- Family Controls для main app, Device Activity Monitor и Shield Configuration
+- Push Notifications, когда появится backend родительских тревог
 
 ## Free vs Paid Apple Account
 
-Apple's built-in Screen Time and Family Sharing controls can be used by families without paying Apple.
+Встроенный Apple Screen Time и Family Sharing на личных iPhone можно использовать без оплаты Apple Developer Program.
 
-For Heimdall as a distributed app:
+Для Heimdall как приложения:
 
-- A free Apple Account is enough to start learning, open Xcode, and test simple builds on your own devices.
-- TestFlight, App Store distribution, push notifications, and production Family Controls distribution require the paid Apple Developer Program.
-- Family Controls also requires Apple approval before production distribution.
+- Бесплатный Apple Account подходит для входа на developer.apple.com, Xcode, документации и простых тестов на своих устройствах.
+- TestFlight, App Store, push notifications и нормальная раздача другим людям требуют Apple Developer Program.
+- Family Controls для TestFlight/App Store требует отдельного разрешения Apple на Family Controls Distribution entitlement.
+
+## После оплаты Apple Developer Program
+
+1. Создать App IDs в Apple Developer:
+   - `com.heimdallgroup.familyprotection`
+   - `com.heimdallgroup.familyprotection.share`
+   - `com.heimdallgroup.familyprotection.monitor`
+   - `com.heimdallgroup.familyprotection.shield`
+
+2. Создать App Group:
+   - `group.com.heimdallgroup.familyprotection`
+
+3. Запросить Family Controls Distribution entitlement:
+   - использовать текст из `../APPLE_FAMILY_CONTROLS_REQUEST.md`
+
+4. После одобрения Apple включить Family Controls в Additional Capabilities для нужных App IDs.
+
+5. Сгенерировать provisioning profiles и собрать архив в Xcode.

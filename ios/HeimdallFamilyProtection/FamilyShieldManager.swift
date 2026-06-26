@@ -9,7 +9,7 @@ import DeviceActivity
 
 @MainActor
 final class FamilyShieldManager: ObservableObject {
-    @Published var statusText = "Разрешение Family Controls еще не запрашивалось."
+    @Published var statusText = "Разрешение Family Controls ещё не запрашивалось."
 
     #if canImport(ManagedSettings)
     private let store = ManagedSettingsStore()
@@ -19,7 +19,7 @@ final class FamilyShieldManager: ObservableObject {
         #if canImport(FamilyControls)
         do {
             try await AuthorizationCenter.shared.requestAuthorization(for: .child)
-            statusText = "Family Controls разрешен родителем."
+            statusText = "Family Controls разрешён родителем."
         } catch {
             statusText = "Не удалось получить разрешение: \(error.localizedDescription)"
         }

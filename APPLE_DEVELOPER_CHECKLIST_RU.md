@@ -1,70 +1,89 @@
-# Apple Developer Checklist
+# Чеклист Apple Developer
 
-## 1. Enroll
+## 1. Бесплатная регистрация
 
-1. Open https://developer.apple.com/enroll/
-2. Join the Apple Developer Program.
-3. Choose Individual for a personal account or Organization for Heimdall-Group as a company.
-4. Complete payment and identity verification.
+Ссылка:
 
-## 2. Create Identifiers
+https://developer.apple.com/register/
 
-Open:
+Бесплатная регистрация даёт вход в Apple Developer, Xcode downloads, форумы и тесты простых сборок на своих устройствах.
+
+## 2. Платная программа
+
+Ссылка:
+
+https://developer.apple.com/programs/enroll/
+
+Для TestFlight, App Store, push notifications, production provisioning profiles и нормальной раздачи приложения другим людям нужна Apple Developer Program.
+
+Стоимость Apple указывает как 99 USD в год или местный эквивалент.
+
+## 3. Identifiers
+
+После подключения Apple Developer Program открыть:
 
 https://developer.apple.com/account/resources/identifiers/list
 
-Create these App IDs:
+Создать App IDs:
 
-- com.heimdallgroup.familyprotection
-- com.heimdallgroup.familyprotection.monitor
-- com.heimdallgroup.familyprotection.shield
-- com.heimdallgroup.familyprotection.report
-- com.heimdallgroup.familyprotection.share
+- `com.heimdallgroup.familyprotection`
+- `com.heimdallgroup.familyprotection.share`
+- `com.heimdallgroup.familyprotection.monitor`
+- `com.heimdallgroup.familyprotection.shield`
 
-Enable capabilities when available:
+Создать App Group:
+
+- `group.com.heimdallgroup.familyprotection`
+
+Включить capabilities, когда они доступны:
 
 - App Groups
 - Push Notifications
-- Sign in with Apple, if user accounts are added
-- Family Controls, after Apple approves it
+- Family Controls после одобрения Apple
 
-Suggested App Group:
+## 4. App Store Connect
 
-group.com.heimdallgroup.familyprotection
-
-## 3. App Store Connect
-
-Open:
+Открыть:
 
 https://appstoreconnect.apple.com/apps
 
-Create app:
+Создать приложение:
 
 - Name: Heimdall Family Protection
-- Primary language: English
-- Bundle ID: com.heimdallgroup.familyprotection
-- SKU: heimdall-family-protection-ios
+- Primary language: English или Russian
+- Bundle ID: `com.heimdallgroup.familyprotection`
+- SKU: `heimdall-family-protection-ios`
 - User access: Full Access for the account owner
 
-## 4. Request Family Controls
+## 5. Family Controls
 
-Open:
+Открыть:
 
 https://developer.apple.com/contact/request/family-controls-distribution
 
-Use the text from `APPLE_FAMILY_CONTROLS_REQUEST.md`.
+Отправить текст из `APPLE_FAMILY_CONTROLS_REQUEST.md`.
 
-## 5. After Approval
+Важно: запрос может отправить только Account Holder платной Apple Developer Program.
 
-For each approved identifier:
+## 6. Xcode
 
-1. Open Identifiers.
-2. Select the App ID.
-3. Open Additional Capabilities.
-4. Enable Family Controls for App Store distribution.
-5. Regenerate provisioning profiles.
-6. Rebuild in Xcode.
+На Mac:
 
-## 6. App Store Review Notes
+```sh
+cd ios
+brew install xcodegen
+xcodegen generate
+open HeimdallFamilyProtection.xcodeproj
+```
 
-Use `APP_STORE_REVIEW_NOTES.md` when submitting the first build.
+В Xcode выбрать Developer Team для всех target, затем собрать приложение.
+
+## 7. После одобрения Family Controls
+
+1. Открыть каждый App ID.
+2. Включить Family Controls в Additional Capabilities.
+3. Пересоздать provisioning profiles.
+4. Собрать архив в Xcode.
+5. Отправить первый build в TestFlight.
+
+Для App Store Review использовать `APP_STORE_REVIEW_NOTES.md`.

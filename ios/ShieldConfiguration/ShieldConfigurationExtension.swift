@@ -10,9 +10,9 @@ final class ShieldConfigurationExtension: ShieldConfigurationDataSource {
             backgroundBlurStyle: .systemUltraThinMaterialDark,
             backgroundColor: .black,
             icon: nil,
-            title: ShieldConfiguration.Label(text: "Heimdall protection pause", color: .white),
-            subtitle: ShieldConfiguration.Label(text: "This action looks risky. Call a trusted adult before continuing.", color: .lightGray),
-            primaryButtonLabel: ShieldConfiguration.Label(text: "I understand", color: .black),
+            title: ShieldConfiguration.Label(text: "Пауза Heimdall", color: .white),
+            subtitle: ShieldConfiguration.Label(text: "Это действие похоже на риск. Позови доверенного взрослого перед продолжением.", color: .lightGray),
+            primaryButtonLabel: ShieldConfiguration.Label(text: "Понятно", color: .black),
             primaryButtonBackgroundColor: .systemYellow
         )
     }
