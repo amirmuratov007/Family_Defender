@@ -1,4 +1,4 @@
-const CACHE_NAME = "family-defender-demo-v1";
+const CACHE_NAME = "heimdall-family-protection-v1";
 const ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./shield-icon.svg"];
 
 self.addEventListener("install", event => {
