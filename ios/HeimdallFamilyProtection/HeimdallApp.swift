@@ -1,14 +1,13 @@
 import SwiftUI
-import FamilyControls
 
 @main
 struct HeimdallApp: App {
-    @StateObject private var shieldManager = FamilyShieldManager()
+    @StateObject private var familyShield = FamilyShieldManager()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(shieldManager)
+                .environmentObject(familyShield)
         }
     }
 }
