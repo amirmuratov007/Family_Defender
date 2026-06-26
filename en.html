@@ -6,111 +6,109 @@
   <meta name="theme-color" content="#050506">
   <link rel="manifest" href="manifest.webmanifest">
   <title>Heimdall-Group - Family Protection</title>
-  <link rel="stylesheet" href="style.css?v=10">
+  <link rel="stylesheet" href="style.css?v=12">
 </head>
 <body>
   <canvas id="net" aria-hidden="true"></canvas>
   <div class="app-shell">
     <header class="topbar">
       <a class="brand" href="index.html" aria-label="Heimdall-Group">
-        <img src="heimdall-logo.svg?v=10" alt="Heimdall-Group logo">
+        <img src="heimdall-logo.svg?v=12" alt="Heimdall-Group logo">
         <span><strong>Heimdall-Group</strong><small>Family Protection</small></span>
       </a>
       <nav class="top-actions" aria-label="Language switch">
         <a class="btn secondary" href="ru.html">RU</a>
-        <a class="btn primary" href="#setup">Set up iPhone</a>
+        <a class="btn primary" href="#install">Connect iPhone</a>
       </nav>
     </header>
 
-    <main class="dashboard-grid">
+    <main class="dashboard-grid product-mode">
       <aside class="sidebar panel">
-        <p class="kicker">Family</p>
-        <h1>Parent Console</h1>
-        <p class="muted">Heimdall does not ask a child to forward private chats. It is built around parent rules, iPhone events and dangerous behavior chains.</p>
+        <p class="kicker">Parent</p>
+        <h1>Family Console</h1>
+        <p class="muted">This is the parent's main screen: connect iPhones, set rules and receive alerts about risky actions.</p>
         <div class="profile-list" aria-label="Family profiles">
-          <button class="profile active" data-profile="Alice" data-risk="87"><span>Alice</span><small>14 · iPhone</small></button>
-          <button class="profile" data-profile="Mark" data-risk="42"><span>Mark</span><small>11 · iPhone</small></button>
-          <button class="profile" data-profile="Grandmother" data-risk="96"><span>Grandmother</span><small>72 · iPhone</small></button>
+          <button class="profile active" data-profile="Alice" data-risk="Protected"><span>Alice</span><small>14 · profile active</small></button>
+          <button class="profile" data-profile="Mark" data-risk="Needs setup"><span>Mark</span><small>11 · waiting for iPhone</small></button>
+          <button class="profile" data-profile="Grandmother" data-risk="Protected"><span>Grandmother</span><small>72 · profile active</small></button>
         </div>
-        <div class="truth-box">
-          <strong>The iPhone truth</strong>
-          <p>A normal iOS app cannot secretly read encrypted Telegram chats. The workable layer is Family Controls, Screen Time, DNS/VPN profile, app approval and dangerous-action signals.</p>
-        </div>
+        <a class="btn primary full" href="#install">Add device</a>
       </aside>
 
       <section class="main-console">
         <section class="hero-panel panel">
           <div>
-            <p class="kicker">Today · active protection</p>
-            <h2>We catch the grooming moment, not the whole conversation.</h2>
-            <p class="muted wide">New contact after a game, fast move to Telegram, bank after messenger, code request, remote access, secrecy and late-night messaging. The parent receives a signal before irreversible action.</p>
+            <p class="kicker">Heimdall Protection</p>
+            <h2>The parent controls protection. The child configures nothing.</h2>
+            <p class="muted wide">Product flow: the parent connects an iPhone, enables rules and receives alerts about game-to-messenger moves, remote-access installs, banking after chat and unknown night contacts.</p>
           </div>
-          <img class="hero-logo" src="heimdall-logo.svg?v=10" alt="Heimdall logo">
+          <img class="hero-logo" src="heimdall-logo.svg?v=12" alt="Heimdall logo">
         </section>
 
         <section class="kpi-grid" aria-label="Protection status">
-          <article class="kpi panel"><span>4</span><small>active alerts</small></article>
-          <article class="kpi panel danger"><span id="riskScore">87</span><small>selected profile risk</small></article>
-          <article class="kpi panel"><span>9</span><small>blocked actions</small></article>
-          <article class="kpi panel"><span>3</span><small>protected devices</small></article>
+          <article class="kpi panel"><span>2</span><small>connected devices</small></article>
+          <article class="kpi panel danger"><span id="riskScore">Protected</span><small>selected profile</small></article>
+          <article class="kpi panel"><span>7</span><small>enabled rules</small></article>
+          <article class="kpi panel"><span>24/7</span><small>event monitoring</small></article>
+        </section>
+
+        <section class="two-col" id="install">
+          <article class="panel setup-panel">
+            <p class="kicker">iPhone Connection</p>
+            <h3>What the parent does</h3>
+            <ol class="steps">
+              <li><b>1. Open the site on the child's iPhone</b><span>The parent opens the link directly and does not ask the child to configure anything.</span></li>
+              <li><b>2. Install Heimdall</b><span>Add the web app to the Home Screen and install a family profile when the profile backend is connected.</span></li>
+              <li><b>3. Enable Screen Time</b><span>The parent sets a Screen Time passcode, app limits and purchase approval.</span></li>
+              <li><b>4. Enable rules</b><span>Telegram, Discord, games, banking and remote-access apps receive family policies.</span></li>
+            </ol>
+            <div class="install-actions">
+              <a class="btn primary" href="manifest.webmanifest">Install PWA</a>
+              <a class="btn secondary" href="IPHONE_SETUP_EN.md">iPhone guide</a>
+            </div>
+          </article>
+
+          <article class="panel device-panel">
+            <p class="kicker">Devices</p>
+            <h3>Family status</h3>
+            <div class="device-row ok"><b>Alice · iPhone</b><span>Screen Time enabled</span><em>Active</em></div>
+            <div class="device-row wait"><b>Mark · iPhone</b><span>Waiting for setup</span><em>Connect</em></div>
+            <div class="device-row ok"><b>Grandmother · iPhone</b><span>Heimdall profile added</span><em>Active</em></div>
+          </article>
         </section>
 
         <section class="two-col">
           <article class="panel feed-panel">
             <div class="section-head">
-              <div><p class="kicker">Signals</p><h3>Live Risk Feed</h3></div>
+              <div><p class="kicker">Alerts</p><h3>What the parent sees</h3></div>
               <span class="status-dot">online</span>
             </div>
             <div class="feed">
-              <div class="alert high"><b>Game chat → Telegram in 3 minutes</b><span>A new contact pushes private messaging after a match. Parent approval required.</span></div>
-              <div class="alert critical"><b>Telegram → bank in 9 minutes</b><span>Triggered chain: messenger, urgency, financial app.</span></div>
-              <div class="alert critical"><b>Remote access request: AnyDesk</b><span>Installation blocked by family policy.</span></div>
-              <div class="alert medium"><b>Unknown number at night</b><span>Contact is not in address book, message after 10 PM.</span></div>
+              <div class="alert high"><b>New contact after game chat</b><span>Heimdall alerts the parent when a child moves from a game to private messaging.</span></div>
+              <div class="alert critical"><b>Messenger → banking app</b><span>Dangerous chain: conversation, urgency, then financial action.</span></div>
+              <div class="alert critical"><b>AnyDesk / RustDesk install attempt</b><span>Remote access is blocked by family policy.</span></div>
+              <div class="alert medium"><b>Night contact outside address book</b><span>The parent gets a signal without reading the entire private chat.</span></div>
             </div>
           </article>
 
           <article class="panel policy-panel">
-            <div class="section-head"><div><p class="kicker">Rules</p><h3>iPhone Policies</h3></div></div>
-            <label class="policy"><input type="checkbox" checked><span>Telegram and Discord only on schedule</span><em>on</em></label>
+            <div class="section-head"><div><p class="kicker">Rules</p><h3>Family policies</h3></div></div>
+            <label class="policy"><input type="checkbox" checked><span>Require approval for Telegram and Discord</span><em>on</em></label>
             <label class="policy"><input type="checkbox" checked><span>Block AnyDesk, RustDesk, TeamViewer</span><em>on</em></label>
             <label class="policy"><input type="checkbox" checked><span>Alert on game → private messenger</span><em>on</em></label>
             <label class="policy"><input type="checkbox" checked><span>Alert on bank after messenger</span><em>on</em></label>
-            <label class="policy"><input type="checkbox"><span>Full communication lock after 10 PM</span><em>off</em></label>
+            <label class="policy"><input type="checkbox" checked><span>No installs without parent</span><em>on</em></label>
           </article>
         </section>
 
-        <section class="two-col" id="setup">
-          <article class="panel setup-panel">
-            <p class="kicker">iPhone Setup</p>
-            <h3>What is actually installed</h3>
-            <ol class="steps">
-              <li><b>Protection profile</b><span>The parent installs a Heimdall profile on the child's iPhone: Screen Time, Family Controls, DNS/VPN signals.</span></li>
-              <li><b>App rules</b><span>Telegram, Discord, games, banking and remote access apps get family restrictions.</span></li>
-              <li><b>Events instead of chat reading</b><span>The system watches dangerous chains: new app, domain, category, time, transition and install attempt.</span></li>
-              <li><b>Parent alert</b><span>The parent gets the reason, score and a short call script.</span></li>
-            </ol>
-          </article>
-
-          <article class="panel simulator-panel">
-            <p class="kicker">Simulator</p>
-            <h3>Build an attack chain</h3>
-            <div class="scenario-buttons">
-              <button class="scenario active" data-risk="18" data-label="New game contact">game → new contact</button>
-              <button class="scenario active" data-risk="22" data-label="Move to Telegram">move to Telegram</button>
-              <button class="scenario active" data-risk="30" data-label="Bank after messenger">bank after chat</button>
-              <button class="scenario" data-risk="28" data-label="Code request">asks for code</button>
-              <button class="scenario" data-risk="38" data-label="Remote access">AnyDesk</button>
-            </div>
-            <div class="risk-card">
-              <span id="simRisk">70</span>
-              <div><b id="simTitle">High risk</b><p id="simText">This event chain resembles grooming or fraud. The parent should stop the action and call.</p></div>
-            </div>
-            <div class="chips" id="simChips"></div>
-          </article>
+        <section class="panel reality-panel">
+          <p class="kicker">Production layer</p>
+          <h3>What is needed for real protection, not a mockup</h3>
+          <p class="muted wide">The site is now the parent console. To actually protect iPhones it needs the next layer: a Heimdall iOS app with Apple's Family Controls entitlement, a policy server and push notifications. Without that, no website can secretly read Telegram or control apps on iPhone.</p>
         </section>
       </section>
     </main>
   </div>
-  <script src="network.js?v=10"></script>
+  <script src="network.js?v=12"></script>
 </body>
 </html>
