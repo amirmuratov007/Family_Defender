@@ -1,4 +1,4 @@
-const CACHE_NAME = "heimdall-family-protection-v11";
+const CACHE_NAME = "heimdall-family-protection-v12";
 const ASSETS = [
   "./",
   "./index.html",
@@ -8,7 +8,9 @@ const ASSETS = [
   "./network.js",
   "./manifest.webmanifest",
   "./heimdall-logo.svg",
-  "./shield-icon.svg"
+  "./shield-icon.svg",
+  "./IPHONE_SETUP_RU.md",
+  "./IPHONE_SETUP_EN.md"
 ];
 
 self.addEventListener("install", event => {
