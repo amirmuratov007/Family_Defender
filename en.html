@@ -1,4 +1,116 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#050506"><link rel="manifest" href="manifest.webmanifest"><title>Heimdall-Group - Family Protection</title><link rel="stylesheet" href="style.css?v=8"></head>
-<body><canvas id="net"></canvas><div class="page"><nav class="nav"><div class="brand"><img class="brand-logo" src="heimdall-logo.jpg?v=8" alt="Heimdall-Group logo"><div><strong>Heimdall-Group</strong><span>Family Protection</span></div></div><div><a class="btn ghost" href="ru.html">RU</a> <a class="btn gold" href="#lab">Check dialog</a></div></nav><main><section class="hero"><div class="hero-grid"><div><div class="eyebrow"><span class="spark"></span> Family Protection System</div><h1>Heimdall watches the edge.<span class="gold-text">Your family stays human.</span></h1><p class="copy">Protection for children and elderly relatives against digital pressure: new contacts, secrecy, urgency, codes, money, addresses and remote access. Not total surveillance, but an intelligent pause at the dangerous moment.</p><div class="actions"><a class="btn gold" href="#lab">Run risk demo</a><a class="btn ghost" href="#protocol">How it works</a></div><div class="trust-row"><div class="trust"><strong>iPhone-first</strong><span>Suspicious text is checked through Share Sheet or manual paste.</span></div><div class="trust"><strong>Privacy</strong><span>Parents see the reason for risk, not the entire private conversation.</span></div><div class="trust"><strong>Pause</strong><span>The key action is stopping a code, transfer, link or installation.</span></div></div></div><div class="device"><img class="hero-logo" src="heimdall-logo.jpg?v=8" alt=""><div class="phone"><div class="screen"><div class="screen-top"><img class="mini-logo" src="heimdall-logo.jpg?v=8" alt=""><div><strong>Heimdall Alert</strong><span>new contact · high pressure</span></div></div><div class="chat"><div class="bubble">You play well. Let us move to Telegram.</div><div class="bubble alert">Do not tell your parents. Send the code urgently or the account will be blocked.</div><div class="bubble">Open the bank app, the confirmation is there.</div></div><div class="risk"><small>Risk 94 / 100</small><h3>Stop. This looks like a scam.</h3><p>A new contact asks for secrecy, urgency and a code. Do not send anything. Call a trusted adult.</p></div></div></div></div></div></section><section class="section" id="protocol"><h2>Clean protection flow</h2><p class="lead">On iPhone the app does not constantly read Telegram. The child sends a suspicious fragment to Heimdall, the system scores the risk and returns a clear next action.</p><div class="cards"><article class="card"><h3>Share to Heimdall</h3><p>Suspicious text from a chat, game or messenger is sent for checking in one action.</p></article><article class="card"><h3>Risk Engine</h3><p>The system detects secrecy, urgency, codes, money, address requests, false authority and remote access.</p></article><article class="card"><h3>Family Pause</h3><p>The child gets a calm warning. The parent gets the risk reason and a non-accusatory call script.</p></article></div></section><section class="section" id="lab"><h2>Risk demo</h2><p class="lead">Paste a suspicious message fragment. This is a local demonstration of the risk logic.</p><div class="lab"><div><textarea id="dialogInput">Hi, you play well. Let us move to Telegram. Do not tell your parents, this is secret. Open the bank app urgently and send me the code or your account will be blocked.</textarea><div class="lab-actions"><button class="btn gold" id="analyzeBtn">Check risk</button><button class="btn ghost" id="safeBtn">Safe example</button></div></div><div class="score"><div class="score-number" id="scoreNum">0</div><h3 id="scoreTitle">Risk score</h3><p id="scoreText">The check has not started yet.</p><div class="chips" id="chips"></div></div></div></section><section class="section"><h2>Family protocol</h2><p class="lead">The product message is simple: we do not read a child's whole life. We catch moments when a stranger asks for secrecy, codes, money, photos, address or app installation.</p><div class="cards"><article class="card"><h3>Do not blame</h3><p>“You are not guilty. Scammers deliberately create urgency and secrecy.”</p></article><article class="card"><h3>Do not take the phone first</h3><p>First stop the code, transfer, link or remote access installation.</p></article><article class="card"><h3>Teach through scenarios</h3><p>Short practice scenarios work better than fear and long lectures.</p></article></div></section></main><footer><span>Heimdall-Group · Family Protection</span><span>Prototype for transparent family safety</span></footer></div><script src="network.js?v=8"></script><script src="risk.js?v=8"></script><script>runRiskDemo({noTriggers:'no triggers',safeExample:'Hi, training is tomorrow at 4 PM. Homework will be posted in the school chat. See you.',levels:{high:{title:'High risk',text:'Pause now: do not send codes, money, address, photos or install apps.'},medium:{title:'Medium risk',text:'Check this contact with a trusted adult before any action.'},low:{title:'Low risk',text:'Some risk signals exist, but there is no urgent alert.'},safe:{title:'Looks safe',text:'No red flags were found in this short fragment.'}},triggers:[{id:'secrecy',label:'secrecy',weight:24,words:['secret','do not tell',"don't tell",'hide','delete chat']},{id:'urgency',label:'urgency',weight:18,words:['urgent','urgently','quickly','right now','otherwise','blocked']},{id:'money',label:'bank or money',weight:30,words:['bank','card','money','credit','transfer','account','wallet']},{id:'access',label:'code or access',weight:30,words:['code','password','screenshot','access','confirm']},{id:'private',label:'private migration',weight:16,words:['telegram','dm','private chat','move to']},{id:'authority',label:'false authority',weight:20,words:['police','security service','bank security','operation']},{id:'remote',label:'remote access',weight:38,words:['anydesk','rustdesk','teamviewer','install app']}]});</script></body></html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#050506">
+  <link rel="manifest" href="manifest.webmanifest">
+  <title>Heimdall-Group - Family Protection</title>
+  <link rel="stylesheet" href="style.css?v=10">
+</head>
+<body>
+  <canvas id="net" aria-hidden="true"></canvas>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="index.html" aria-label="Heimdall-Group">
+        <img src="heimdall-logo.jpg?v=10" alt="Heimdall-Group logo">
+        <span><strong>Heimdall-Group</strong><small>Family Protection</small></span>
+      </a>
+      <nav class="top-actions" aria-label="Language switch">
+        <a class="btn secondary" href="ru.html">RU</a>
+        <a class="btn primary" href="#setup">Set up iPhone</a>
+      </nav>
+    </header>
+
+    <main class="dashboard-grid">
+      <aside class="sidebar panel">
+        <p class="kicker">Family</p>
+        <h1>Parent Console</h1>
+        <p class="muted">Heimdall does not ask a child to forward private chats. It is built around parent rules, iPhone events and dangerous behavior chains.</p>
+        <div class="profile-list" aria-label="Family profiles">
+          <button class="profile active" data-profile="Alice" data-risk="87"><span>Alice</span><small>14 · iPhone</small></button>
+          <button class="profile" data-profile="Mark" data-risk="42"><span>Mark</span><small>11 · iPhone</small></button>
+          <button class="profile" data-profile="Grandmother" data-risk="96"><span>Grandmother</span><small>72 · iPhone</small></button>
+        </div>
+        <div class="truth-box">
+          <strong>The iPhone truth</strong>
+          <p>A normal iOS app cannot secretly read encrypted Telegram chats. The workable layer is Family Controls, Screen Time, DNS/VPN profile, app approval and dangerous-action signals.</p>
+        </div>
+      </aside>
+
+      <section class="main-console">
+        <section class="hero-panel panel">
+          <div>
+            <p class="kicker">Today · active protection</p>
+            <h2>We catch the grooming moment, not the whole conversation.</h2>
+            <p class="muted wide">New contact after a game, fast move to Telegram, bank after messenger, code request, remote access, secrecy and late-night messaging. The parent receives a signal before irreversible action.</p>
+          </div>
+          <img class="hero-logo" src="heimdall-logo.jpg?v=10" alt="Heimdall logo">
+        </section>
+
+        <section class="kpi-grid" aria-label="Protection status">
+          <article class="kpi panel"><span>4</span><small>active alerts</small></article>
+          <article class="kpi panel danger"><span id="riskScore">87</span><small>selected profile risk</small></article>
+          <article class="kpi panel"><span>9</span><small>blocked actions</small></article>
+          <article class="kpi panel"><span>3</span><small>protected devices</small></article>
+        </section>
+
+        <section class="two-col">
+          <article class="panel feed-panel">
+            <div class="section-head">
+              <div><p class="kicker">Signals</p><h3>Live Risk Feed</h3></div>
+              <span class="status-dot">online</span>
+            </div>
+            <div class="feed">
+              <div class="alert high"><b>Game chat → Telegram in 3 minutes</b><span>A new contact pushes private messaging after a match. Parent approval required.</span></div>
+              <div class="alert critical"><b>Telegram → bank in 9 minutes</b><span>Triggered chain: messenger, urgency, financial app.</span></div>
+              <div class="alert critical"><b>Remote access request: AnyDesk</b><span>Installation blocked by family policy.</span></div>
+              <div class="alert medium"><b>Unknown number at night</b><span>Contact is not in address book, message after 10 PM.</span></div>
+            </div>
+          </article>
+
+          <article class="panel policy-panel">
+            <div class="section-head"><div><p class="kicker">Rules</p><h3>iPhone Policies</h3></div></div>
+            <label class="policy"><input type="checkbox" checked><span>Telegram and Discord only on schedule</span><em>on</em></label>
+            <label class="policy"><input type="checkbox" checked><span>Block AnyDesk, RustDesk, TeamViewer</span><em>on</em></label>
+            <label class="policy"><input type="checkbox" checked><span>Alert on game → private messenger</span><em>on</em></label>
+            <label class="policy"><input type="checkbox" checked><span>Alert on bank after messenger</span><em>on</em></label>
+            <label class="policy"><input type="checkbox"><span>Full communication lock after 10 PM</span><em>off</em></label>
+          </article>
+        </section>
+
+        <section class="two-col" id="setup">
+          <article class="panel setup-panel">
+            <p class="kicker">iPhone Setup</p>
+            <h3>What is actually installed</h3>
+            <ol class="steps">
+              <li><b>Protection profile</b><span>The parent installs a Heimdall profile on the child's iPhone: Screen Time, Family Controls, DNS/VPN signals.</span></li>
+              <li><b>App rules</b><span>Telegram, Discord, games, banking and remote access apps get family restrictions.</span></li>
+              <li><b>Events instead of chat reading</b><span>The system watches dangerous chains: new app, domain, category, time, transition and install attempt.</span></li>
+              <li><b>Parent alert</b><span>The parent gets the reason, score and a short call script.</span></li>
+            </ol>
+          </article>
+
+          <article class="panel simulator-panel">
+            <p class="kicker">Simulator</p>
+            <h3>Build an attack chain</h3>
+            <div class="scenario-buttons">
+              <button class="scenario active" data-risk="18" data-label="New game contact">game → new contact</button>
+              <button class="scenario active" data-risk="22" data-label="Move to Telegram">move to Telegram</button>
+              <button class="scenario active" data-risk="30" data-label="Bank after messenger">bank after chat</button>
+              <button class="scenario" data-risk="28" data-label="Code request">asks for code</button>
+              <button class="scenario" data-risk="38" data-label="Remote access">AnyDesk</button>
+            </div>
+            <div class="risk-card">
+              <span id="simRisk">70</span>
+              <div><b id="simTitle">High risk</b><p id="simText">This event chain resembles grooming or fraud. The parent should stop the action and call.</p></div>
+            </div>
+            <div class="chips" id="simChips"></div>
+          </article>
+        </section>
+      </section>
+    </main>
+  </div>
+  <script src="network.js?v=10"></script>
+</body>
+</html>
