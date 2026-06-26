@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 930 626" role="img" aria-label="Heimdall Group logo">
+  <defs>
+    <linearGradient id="gold" x1="120" y1="60" x2="790" y2="560" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff1a8"/>
+      <stop offset="0.35" stop-color="#d5a642"/>
+      <stop offset="0.72" stop-color="#8b621b"/>
+      <stop offset="1" stop-color="#f7d779"/>
+    </linearGradient>
+    <linearGradient id="darkGold" x1="220" y1="150" x2="700" y2="540" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5a3a0b"/>
+      <stop offset="0.5" stop-color="#b98728"/>
+      <stop offset="1" stop-color="#332006"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#d5a642" flood-opacity="0.45"/>
+      <feDropShadow dx="0" dy="18" stdDeviation="16" flood-color="#000" flood-opacity="0.55"/>
+    </filter>
+  </defs>
+  <g filter="url(#glow)">
+    <path d="M246 278 20 155l255 62Z" fill="url(#gold)"/>
+    <path d="M248 326 37 254l242 20Z" fill="url(#gold)" opacity=".9"/>
+    <path d="M263 371 94 337l191-12Z" fill="url(#gold)" opacity=".82"/>
+    <path d="M684 278 910 155l-255 62Z" fill="url(#gold)"/>
+    <path d="M682 326 893 254l-242 20Z" fill="url(#gold)" opacity=".9"/>
+    <path d="M667 371 836 337l-191-12Z" fill="url(#gold)" opacity=".82"/>
+    <path d="M465 102 690 183v191c0 99-77 179-225 239-148-60-225-140-225-239V183l225-81Z" fill="url(#gold)"/>
+    <path d="M465 142 645 207v161c0 77-56 139-180 192-124-53-180-115-180-192V207l180-65Z" fill="#070707" opacity=".92"/>
+    <path d="M465 171c-92 38-125 111-107 204l61-36 46 90 46-90 61 36c18-93-15-166-107-204Z" fill="url(#darkGold)"/>
+    <path d="M465 171v258" stroke="url(#gold)" stroke-width="19" stroke-linecap="round"/>
+    <path d="M356 338c32-14 63-18 95-13l-44 34-51-21Z" fill="#0b0b0b"/>
+    <path d="M574 338c-32-14-63-18-95-13l44 34 51-21Z" fill="#0b0b0b"/>
+    <path d="M382 384 433 351 465 429 497 351 548 384 514 506 465 552 416 506Z" fill="url(#gold)" opacity=".9"/>
+    <path d="M465 22 506 98h-82Z" fill="url(#gold)"/>
+    <circle cx="425" cy="105" r="13" fill="#6b470e" stroke="#e6bd5a" stroke-width="5"/>
+    <circle cx="505" cy="105" r="13" fill="#6b470e" stroke="#e6bd5a" stroke-width="5"/>
+  </g>
+</svg>
