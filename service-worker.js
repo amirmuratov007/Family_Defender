@@ -1,4 +1,4 @@
-const CACHE_NAME = "heimdall-family-protection-v14";
+const CACHE_NAME = "heimdall-family-protection-v15";
 const ASSETS = [
   "./",
   "./index.html",
