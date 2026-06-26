@@ -11,12 +11,12 @@ The product focuses on risky moments:
 
 ## Current Repository Contents
 
-- `index.html`, `ru.html`, `en.html` - public product site and family console.
+- `ios/` - native iOS app with parent/child role selection, local alerts, local notifications and Family Controls starter code.
+- `index.html`, `ru.html`, `en.html` - public product site and web demo, not the main child-safety product.
 - `style.css`, `network.js` - visual system and animated background.
 - `api/analyze.js` - serverless API endpoint for risk analysis.
 - `api/health.js` - serverless health endpoint.
 - `lib/risk-engine.js` - shared scam-pattern risk engine.
-- `ios/` - native iOS starter code for Xcode.
 - `APPLE_FAMILY_CONTROLS_REQUEST.md` - Apple entitlement request text.
 - `APPLE_DEVELOPER_CHECKLIST_RU.md` - step-by-step Apple setup checklist.
 - `APP_STORE_REVIEW_NOTES.md` - App Store Review notes.
@@ -48,7 +48,9 @@ curl -X POST http://127.0.0.1:8788/api/analyze \
 
 The static site and `/api/*` serverless functions can be deployed on Vercel from this repository.
 
-## iOS Reality
+## iOS App Reality
+
+The main product is the native iOS app in `ios/`.
 
 An ordinary website cannot silently read Telegram, WhatsApp, Discord, or other private messenger content on iPhone.
 
@@ -59,6 +61,8 @@ The real iPhone product requires:
 - Family Controls Distribution entitlement approval;
 - Device Activity / Managed Settings implementation;
 - parent account and push notification backend.
+
+The current iOS MVP already has a first-screen parent/child role choice, parent dashboard, child safety screen, local risk alerts and local iOS notifications. Real cross-device parent notifications require APNs and a backend.
 
 ## Apple Next Step
 

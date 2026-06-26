@@ -1,13 +1,13 @@
 import SwiftUI
 
-struct RiskMatch: Identifiable {
+struct RiskMatch: Identifiable, Codable, Hashable {
     let id: String
     let label: String
     let evidence: String
     let weight: Int
 }
 
-enum RiskLevel: String {
+enum RiskLevel: String, Codable {
     case low
     case medium
     case high
@@ -21,13 +21,29 @@ enum RiskLevel: String {
         case .critical: return .red
         }
     }
+
+    var title: String {
+        switch self {
+        case .low: return "Низкий риск"
+        case .medium: return "Средний риск"
+        case .high: return "Высокий риск"
+        case .critical: return "Критический риск"
+        }
+    }
 }
 
-struct RiskResult {
+struct RiskResult: Codable, Hashable {
     let score: Int
     let level: RiskLevel
     let matches: [RiskMatch]
     let action: String
+
+    static let empty = RiskResult(
+        score: 0,
+        level: .low,
+        matches: [],
+        action: "Вставьте сообщение и нажмите проверку."
+    )
 }
 
 enum RiskAnalyzer {
@@ -38,7 +54,8 @@ enum RiskAnalyzer {
         ("money", "Банк или деньги", 30, ["bank", "card", "банк", "карта", "перевод", "кредит", "деньги", "кошелёк"]),
         ("code", "Код или доступ", 30, ["code", "password", "sms", "код", "пароль", "смс", "sms"]),
         ("remote_access", "Удалённый доступ", 38, ["anydesk", "rustdesk", "teamviewer", "удалённый доступ", "экран", "установи приложение"]),
-        ("personal_data", "Личные данные", 18, ["address", "photo", "passport", "адрес", "фото", "паспорт", "документ"])
+        ("authority", "Ложный авторитет", 20, ["police", "security service", "bank security", "полиция", "фсб", "служба безопасности"]),
+        ("personal_data", "Личные данные", 18, ["address", "photo", "passport", "адрес", "фото", "паспорт", "документ", "геолокация"])
     ]
 
     static func analyze(_ text: String) -> RiskResult {
@@ -68,7 +85,7 @@ enum RiskAnalyzer {
         case .medium:
             action = "Сделай паузу и проверь этот контакт вместе с доверенным взрослым."
         case .low:
-            action = "В коротком фрагменте явный мошеннический сценарий не найден."
+            action = "Явный мошеннический сценарий в этом фрагменте не найден."
         }
 
         return RiskResult(score: score, level: level, matches: matches, action: action)

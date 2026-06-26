@@ -1,15 +1,50 @@
 # Heimdall iOS
 
-Это стартовая iOS-версия Heimdall Family Defender: один app shell с режимом родителя и режимом ребёнка.
+Главный продукт Heimdall для iPhone - нативное приложение, а не сайт.
 
-## Что уже есть
+В текущем MVP это один iOS app target с выбором роли при первом запуске:
 
-- Родительская панель: подключение Family Controls, базовые правила, доверенные взрослые и будущая лента тревог.
-- Детский режим: проверка подозрительного сообщения, антискам-пауза и связь с доверенным взрослым.
-- Share Extension: точка входа для текста, который пользователь явно отправляет в Heimdall через Share Sheet.
-- Device Activity Monitor Extension: основа для риск-событий Screen Time.
-- Shield Configuration Extension: русский экран защитной паузы.
+- `Я родитель`
+- `Я ребёнок`
+
+Позже этот app shell можно оставить одним приложением или разделить на два продукта:
+
+- Heimdall Parent
+- Heimdall Child
+
+## Что уже есть в приложении
+
+- Первый экран выбора роли.
+- Родительская панель:
+  - список подключённых детей;
+  - статус безопасности;
+  - лента тревог;
+  - включение локальных уведомлений;
+  - тестовая тревога;
+  - запрос Family Controls.
+- Детский режим:
+  - подключение к родителю;
+  - кнопка `Я в безопасности`;
+  - проверка подозрительного сообщения;
+  - создание тревоги при высоком риске.
+- Локальное хранение семейного теста через `UserDefaults`.
+- Локальные iOS-уведомления через `UserNotifications`.
+- Share Extension для текста, который пользователь явно отправляет в Heimdall через Share Sheet.
+- Device Activity Monitor Extension как основа Screen Time событий.
+- Shield Configuration Extension как экран защитной паузы.
 - `project.yml` для генерации Xcode-проекта через XcodeGen.
+
+## Важное про уведомления
+
+Сейчас MVP умеет показывать локальные уведомления на том же iPhone. Это нужно, чтобы протестировать UX родителя и ребёнка без backend.
+
+Чтобы родитель получал push-уведомление на свой iPhone, когда риск возник на iPhone ребёнка, нужны:
+
+- Apple Developer Program;
+- Push Notifications capability;
+- APNs key/certificate;
+- backend для регистрации устройств и отправки тревог;
+- согласованный семейный аккаунт или pairing flow.
 
 ## Как открыть на Mac
 
@@ -28,7 +63,7 @@
    open HeimdallFamilyProtection.xcodeproj
    ```
 
-4. В Xcode выбрать свою Apple Developer Team для всех target.
+4. В Xcode выбрать свою Apple Developer Team для всех targets.
 
 Можно сделать то же одной командой из корня репозитория:
 
@@ -56,21 +91,21 @@ Device Activity Report Extension можно добавить следующим 
 
 - App Groups: `group.com.heimdallgroup.familyprotection`
 - Family Controls для main app, Device Activity Monitor и Shield Configuration
-- Push Notifications, когда появится backend родительских тревог
+- Push Notifications для реальных тревог родителю на другой iPhone
 
 ## Free vs Paid Apple Account
 
 Встроенный Apple Screen Time и Family Sharing на личных iPhone можно использовать без оплаты Apple Developer Program.
 
-Для Heimdall как приложения:
+Для Heimdall как распространяемого приложения:
 
-- Бесплатный Apple Account подходит для входа на developer.apple.com, Xcode, документации и простых тестов на своих устройствах.
-- TestFlight, App Store, push notifications и нормальная раздача другим людям требуют Apple Developer Program.
+- бесплатный Apple Account подходит для входа на developer.apple.com, Xcode, документации и простых тестов на своих устройствах;
+- TestFlight, App Store, push notifications и нормальная раздача другим людям требуют Apple Developer Program;
 - Family Controls для TestFlight/App Store требует отдельного разрешения Apple на Family Controls Distribution entitlement.
 
 ## После оплаты Apple Developer Program
 
-1. Создать App IDs в Apple Developer:
+1. Создать App IDs:
    - `com.heimdallgroup.familyprotection`
    - `com.heimdallgroup.familyprotection.share`
    - `com.heimdallgroup.familyprotection.monitor`
@@ -79,9 +114,11 @@ Device Activity Report Extension можно добавить следующим 
 2. Создать App Group:
    - `group.com.heimdallgroup.familyprotection`
 
-3. Запросить Family Controls Distribution entitlement:
+3. Включить Push Notifications для main app.
+
+4. Запросить Family Controls Distribution entitlement:
    - использовать текст из `../APPLE_FAMILY_CONTROLS_REQUEST.md`
 
-4. После одобрения Apple включить Family Controls в Additional Capabilities для нужных App IDs.
+5. После одобрения Apple включить Family Controls в Additional Capabilities.
 
-5. Сгенерировать provisioning profiles и собрать архив в Xcode.
+6. Сгенерировать provisioning profiles и собрать архив в Xcode.

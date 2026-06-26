@@ -1,47 +1,6 @@
 import SwiftUI
 
-struct ContentView: View {
-    @EnvironmentObject private var familyShield: FamilyShieldManager
-    @State private var role: AppRole = .parent
-    @State private var text = "Перейдем в Telegram. Родителям не говори. Срочно открой банк и пришли код из СМС."
-    @State private var result = RiskAnalyzer.analyze("")
-
-    var body: some View {
-        NavigationStack {
-            ZStack {
-                Color.black.ignoresSafeArea()
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 24) {
-                        HeaderView()
-                        rolePicker
-
-                        switch role {
-                        case .parent:
-                            ParentDashboardView()
-                        case .child:
-                            ChildProtectionView(text: $text, result: $result)
-                        }
-                    }
-                    .padding(24)
-                }
-            }
-            .navigationTitle("Heimdall")
-            .toolbarColorScheme(.dark, for: .navigationBar)
-        }
-        .preferredColorScheme(.dark)
-    }
-
-    private var rolePicker: some View {
-        Picker("Режим", selection: $role) {
-            ForEach(AppRole.allCases) { role in
-                Text(role.title).tag(role)
-            }
-        }
-        .pickerStyle(.segmented)
-    }
-}
-
-private enum AppRole: String, CaseIterable, Identifiable {
+enum AppRole: String, CaseIterable, Identifiable {
     case parent
     case child
 
@@ -49,114 +8,257 @@ private enum AppRole: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
+        case .parent: return "Я родитель"
+        case .child: return "Я ребёнок"
+        }
+    }
+
+    var shortTitle: String {
+        switch self {
         case .parent: return "Родитель"
         case .child: return "Ребёнок"
         }
     }
-}
 
-private struct HeaderView: View {
-    var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("HEIMDALL-GROUP")
-                .font(.caption.bold())
-                .tracking(2)
-                .foregroundStyle(Color(red: 0.96, green: 0.82, blue: 0.45))
-            Text("Family Defender")
-                .font(.largeTitle.bold())
-                .foregroundStyle(.white)
-            Text("Родительская панель и детская антискам-пауза против секретности, кодов, денег, адресов, фото и удалённого доступа.")
-                .foregroundStyle(.secondary)
+    var icon: String {
+        switch self {
+        case .parent: return "person.2.badge.shield.checkmark"
+        case .child: return "figure.child"
         }
     }
 }
 
-private struct ParentDashboardView: View {
+struct ContentView: View {
+    @AppStorage("heimdall.selected.role") private var selectedRoleRaw = ""
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            ParentSetupView()
-            ParentStatusView()
-            ParentRulesView()
+        NavigationStack {
+            ZStack {
+                AppBackground()
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 18) {
+                        if let role = AppRole(rawValue: selectedRoleRaw) {
+                            RoleHeader(role: role) {
+                                selectedRoleRaw = ""
+                            }
+
+                            switch role {
+                            case .parent:
+                                ParentAppView()
+                            case .child:
+                                ChildAppView()
+                            }
+                        } else {
+                            RoleSelectionView { role in
+                                selectedRoleRaw = role.rawValue
+                            }
+                        }
+                    }
+                    .padding(20)
+                }
+            }
+            .navigationTitle("Heimdall")
+            .toolbarColorScheme(.dark, for: .navigationBar)
+        }
+        .preferredColorScheme(.dark)
+    }
+}
+
+private struct RoleSelectionView: View {
+    let onSelect: (AppRole) -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 22) {
+            HeaderBlock(
+                title: "Family Defender",
+                subtitle: "Выберите, кто открывает приложение на этом iPhone."
+            )
+
+            ForEach(AppRole.allCases) { role in
+                Button {
+                    onSelect(role)
+                } label: {
+                    HStack(spacing: 14) {
+                        Image(systemName: role.icon)
+                            .font(.title2)
+                            .frame(width: 34)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(role.title)
+                                .font(.headline)
+                            Text(role == .parent ? "Панель детей, тревоги и уведомления" : "Пауза, проверка сообщения и связь со взрослым")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .foregroundStyle(.secondary)
+                    }
+                    .foregroundStyle(.white)
+                    .padding(16)
+                    .background(.white.opacity(0.07))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
+                .buttonStyle(.plain)
+            }
         }
     }
 }
 
-private struct ParentSetupView: View {
+private struct RoleHeader: View {
+    let role: AppRole
+    let changeRole: () -> Void
+
+    var body: some View {
+        HStack(alignment: .center, spacing: 14) {
+            Image(systemName: role.icon)
+                .font(.title2)
+                .foregroundStyle(.yellow)
+                .frame(width: 38, height: 38)
+                .background(.white.opacity(0.08))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Heimdall")
+                    .font(.title.bold())
+                    .foregroundStyle(.white)
+                Text(role.shortTitle)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            Button("Сменить") {
+                changeRole()
+            }
+            .buttonStyle(.bordered)
+        }
+    }
+}
+
+private struct ParentAppView: View {
     @EnvironmentObject private var familyShield: FamilyShieldManager
+    @EnvironmentObject private var alertStore: FamilyAlertStore
+    @EnvironmentObject private var notifications: NotificationManager
 
     var body: some View {
-        PanelCard {
-            VStack(alignment: .leading, spacing: 12) {
-                SectionTitle("Родительская версия")
-                Text("Родитель создаёт семью, подключает iPhone ребёнка, выдаёт разрешение Screen Time и получает только риск-сигналы, а не всю переписку.")
-                    .foregroundStyle(.secondary)
+        VStack(alignment: .leading, spacing: 16) {
+            HeaderBlock(
+                title: "Дети в безопасности",
+                subtitle: alertStore.lastSafetyText
+            )
 
-                Button("Запросить разрешение Family Controls") {
-                    Task { await familyShield.requestAuthorization() }
-                }
-                .buttonStyle(.borderedProminent)
-
-                Button("Включить базовые правила") {
-                    familyShield.applyBaseRules()
-                }
-                .buttonStyle(.bordered)
-
-                Text(familyShield.statusText)
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+                MetricCard(title: "Дети", value: "\(alertStore.devices.count)")
+                MetricCard(title: "Тревоги", value: "\(alertStore.alerts.count)")
             }
-        }
-    }
-}
 
-private struct ParentStatusView: View {
-    var body: some View {
-        PanelCard {
-            VStack(alignment: .leading, spacing: 12) {
-                SectionTitle("Семейная панель")
-                InfoRow(title: "Подключённые устройства", value: "0")
-                InfoRow(title: "Доверенные взрослые", value: "Не добавлены")
-                InfoRow(title: "Последняя тревога", value: "Нет реальных событий")
-                Text("После подключения здесь появятся реальные устройства семьи. Демонстрационные дети и фальшивые тревоги не показываются.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-            }
-        }
-    }
-}
-
-private struct ParentRulesView: View {
-    private let rules = [
-        "новый контакт или переход из игры в личку",
-        "секретность, давление или срочность",
-        "код, банк, деньги, адрес, фото или удалённый доступ",
-        "антискам-пауза перед опасным действием"
-    ]
-
-    var body: some View {
-        PanelCard {
-            VStack(alignment: .leading, spacing: 12) {
-                SectionTitle("Что получает родитель")
-                ForEach(rules, id: \.self) { rule in
-                    Label(rule, systemImage: "shield.checkered")
-                        .foregroundStyle(.secondary)
-                }
-            }
-        }
-    }
-}
-
-private struct ChildProtectionView: View {
-    @Binding var text: String
-    @Binding var result: RiskResult
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
             PanelCard {
                 VStack(alignment: .leading, spacing: 12) {
-                    SectionTitle("Версия ребёнка")
-                    Text("Ребёнок не настраивает слежку и правила. Он получает понятную паузу, объяснение риска и кнопку связи со взрослым.")
+                    SectionTitle("Уведомления")
+                    Text(notifications.statusText)
                         .foregroundStyle(.secondary)
+                    HStack {
+                        Button("Включить уведомления") {
+                            notifications.requestAuthorization()
+                        }
+                        .buttonStyle(.borderedProminent)
+
+                        Button("Тестовая тревога") {
+                            let alert = alertStore.addTestAlert()
+                            notifications.sendParentRiskNotification(alert: alert)
+                        }
+                        .buttonStyle(.bordered)
+                    }
+                }
+            }
+
+            PanelCard {
+                VStack(alignment: .leading, spacing: 12) {
+                    SectionTitle("Подключённые дети")
+                    if alertStore.devices.isEmpty {
+                        EmptyLine(title: "Пока нет устройств", text: "Откройте режим ребёнка на iPhone ребёнка и подключите его.")
+                    } else {
+                        ForEach(alertStore.devices) { device in
+                            DeviceRow(device: device)
+                        }
+                    }
+                }
+            }
+
+            PanelCard {
+                VStack(alignment: .leading, spacing: 12) {
+                    SectionTitle("Лента тревог")
+                    if alertStore.alerts.isEmpty {
+                        EmptyLine(title: "Тревог нет", text: "Когда риск станет высоким, родитель увидит уведомление и запись здесь.")
+                    } else {
+                        ForEach(alertStore.alerts) { alert in
+                            AlertRow(alert: alert)
+                        }
+                    }
+                }
+            }
+
+            PanelCard {
+                VStack(alignment: .leading, spacing: 12) {
+                    SectionTitle("Apple Screen Time")
+                    Text(familyShield.statusText)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                    Button("Запросить Family Controls") {
+                        Task { await familyShield.requestAuthorization() }
+                    }
+                    .buttonStyle(.bordered)
+                    Button("Включить базовые правила") {
+                        familyShield.applyBaseRules()
+                    }
+                    .buttonStyle(.bordered)
+                }
+            }
+        }
+    }
+}
+
+private struct ChildAppView: View {
+    @EnvironmentObject private var alertStore: FamilyAlertStore
+    @EnvironmentObject private var notifications: NotificationManager
+
+    @State private var childName = "Артур"
+    @State private var deviceName = "iPhone ребёнка"
+    @State private var trustedAdult = "Папа"
+    @State private var text = "Перейдём в Telegram. Родителям не говори. Срочно открой банк и пришли код из СМС."
+    @State private var result = RiskResult.empty
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HeaderBlock(
+                title: "Детская защита",
+                subtitle: "Проверка риска, кнопка безопасности и связь со взрослым."
+            )
+
+            PanelCard {
+                VStack(alignment: .leading, spacing: 12) {
+                    SectionTitle("Подключение")
+                    TextField("Имя ребёнка", text: $childName)
+                        .textFieldStyle(.roundedBorder)
+                    TextField("Устройство", text: $deviceName)
+                        .textFieldStyle(.roundedBorder)
+                    TextField("Доверенный взрослый", text: $trustedAdult)
+                        .textFieldStyle(.roundedBorder)
+                    Button("Подключить к родителю") {
+                        alertStore.connectChild(childName: childName, deviceName: deviceName, trustedAdult: trustedAdult)
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+            }
+
+            PanelCard {
+                VStack(alignment: .leading, spacing: 12) {
+                    SectionTitle("Я в безопасности")
+                    Button {
+                        alertStore.markChildSafe(childName: childName)
+                        notifications.sendSafeNotification(childName: childName)
+                    } label: {
+                        Label("Сообщить родителю", systemImage: "checkmark.shield")
+                    }
+                    .buttonStyle(.borderedProminent)
                 }
             }
 
@@ -164,31 +266,50 @@ private struct ChildProtectionView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     SectionTitle("Проверить сообщение")
                     TextEditor(text: $text)
-                        .frame(minHeight: 140)
+                        .frame(minHeight: 150)
                         .scrollContentBackground(.hidden)
-                        .foregroundStyle(.white)
                         .padding(12)
                         .background(.white.opacity(0.06))
                         .clipShape(RoundedRectangle(cornerRadius: 8))
 
-                    Button("Проверить риск") {
-                        result = RiskAnalyzer.analyze(text)
+                    HStack {
+                        Button("Проверить риск") {
+                            result = RiskAnalyzer.analyze(text)
+                            if let alert = alertStore.recordRisk(result: result, childName: childName) {
+                                notifications.sendParentRiskNotification(alert: alert)
+                            }
+                        }
+                        .buttonStyle(.borderedProminent)
+
+                        Button("Очистить") {
+                            text = ""
+                            result = .empty
+                        }
+                        .buttonStyle(.bordered)
                     }
-                    .buttonStyle(.borderedProminent)
 
                     RiskResultView(result: result)
                 }
             }
+        }
+    }
+}
 
-            PanelCard {
-                VStack(alignment: .leading, spacing: 12) {
-                    SectionTitle("Антискам-пауза")
-                    Text("Если кто-то просит код, деньги, фото, адрес, секрет или удалённый доступ, ребёнок видит паузу и зовёт взрослого.")
-                        .foregroundStyle(.secondary)
-                    Button("Позвонить доверенному взрослому") {}
-                        .buttonStyle(.bordered)
-                }
-            }
+private struct HeaderBlock: View {
+    let title: String
+    let subtitle: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("HEIMDALL-GROUP")
+                .font(.caption.bold())
+                .tracking(2)
+                .foregroundStyle(.yellow)
+            Text(title)
+                .font(.largeTitle.bold())
+                .foregroundStyle(.white)
+            Text(subtitle)
+                .foregroundStyle(.secondary)
         }
     }
 }
@@ -199,8 +320,29 @@ private struct PanelCard<Content: View>: View {
     var body: some View {
         content
             .padding(16)
-            .background(.white.opacity(0.06))
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(.white.opacity(0.07))
             .clipShape(RoundedRectangle(cornerRadius: 8))
+    }
+}
+
+private struct MetricCard: View {
+    let title: String
+    let value: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(value)
+                .font(.system(size: 36, weight: .black))
+                .foregroundStyle(.yellow)
+            Text(title)
+                .font(.footnote.bold())
+                .foregroundStyle(.secondary)
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.white.opacity(0.07))
+        .clipShape(RoundedRectangle(cornerRadius: 8))
     }
 }
 
@@ -213,30 +355,70 @@ private struct SectionTitle: View {
 
     var body: some View {
         Text(text)
-            .font(.title2.bold())
+            .font(.title3.bold())
             .foregroundStyle(.white)
     }
 }
 
-private struct InfoRow: View {
-    let title: String
-    let value: String
+private struct DeviceRow: View {
+    let device: ChildDevice
 
     var body: some View {
-        HStack(alignment: .firstTextBaseline) {
-            Text(title)
+        VStack(alignment: .leading, spacing: 5) {
+            HStack {
+                Text(device.childName)
+                    .font(.headline)
+                    .foregroundStyle(.white)
+                Spacer()
+                Text(device.status)
+                    .font(.caption.bold())
+                    .foregroundStyle(.yellow)
+            }
+            Text("\(device.deviceName) · \(device.trustedAdult)")
+                .font(.footnote)
                 .foregroundStyle(.secondary)
-            Spacer(minLength: 16)
-            Text(value)
-                .font(.headline)
-                .foregroundStyle(.white)
-                .multilineTextAlignment(.trailing)
         }
         .padding(.vertical, 8)
-        .overlay(alignment: .bottom) {
-            Rectangle()
-                .fill(.white.opacity(0.12))
-                .frame(height: 1)
+    }
+}
+
+private struct AlertRow: View {
+    let alert: FamilyAlert
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack {
+                Text("\(alert.childName): \(alert.level.title)")
+                    .font(.headline)
+                    .foregroundStyle(alert.level.color)
+                Spacer()
+                Text("\(alert.score)/100")
+                    .font(.caption.bold())
+                    .foregroundStyle(.white)
+            }
+            Text(alert.reasons.joined(separator: ", "))
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+            Text(alert.createdAt, style: .time)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .padding(.vertical, 8)
+    }
+}
+
+private struct EmptyLine: View {
+    let title: String
+    let text: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            Text(title)
+                .font(.headline)
+                .foregroundStyle(.white)
+            Text(text)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
         }
     }
 }
@@ -246,17 +428,33 @@ private struct RiskResultView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Риск \(result.score)/100")
-                .font(.title.bold())
-                .foregroundStyle(result.level.color)
+            HStack(alignment: .firstTextBaseline) {
+                Text("\(result.score)")
+                    .font(.system(size: 44, weight: .black))
+                    .foregroundStyle(result.level.color)
+                Text(result.level.title)
+                    .font(.headline)
+                    .foregroundStyle(.white)
+            }
             Text(result.action)
                 .foregroundStyle(.white)
             ForEach(result.matches) { match in
-                Text("\(match.label): \(match.evidence)")
+                Label("\(match.label) +\(match.weight)", systemImage: "exclamationmark.triangle")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
         }
-        .padding(.vertical, 8)
+        .padding(.top, 8)
+    }
+}
+
+private struct AppBackground: View {
+    var body: some View {
+        LinearGradient(
+            colors: [Color.black, Color(red: 0.08, green: 0.07, blue: 0.04)],
+            startPoint: .top,
+            endPoint: .bottom
+        )
+        .ignoresSafeArea()
     }
 }
