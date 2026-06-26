@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import UserNotifications
 
@@ -63,6 +64,16 @@ final class NotificationManager: NSObject, ObservableObject, UNUserNotificationC
         content.sound = .default
 
         enqueue(identifier: "pairing-\(UUID().uuidString)", content: content)
+    }
+
+    func sendLocationAlertNotification(alert: FamilyAlert) {
+        let content = UNMutableNotificationContent()
+        content.title = "Heimdall: геолокация \(alert.childName)"
+        content.body = alert.summary
+        content.sound = .default
+        content.badge = 1
+
+        enqueue(identifier: "location-\(alert.id.uuidString)", content: content)
     }
 
     func clearDeliveredAndPending() {

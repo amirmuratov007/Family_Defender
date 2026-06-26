@@ -1,3 +1,5 @@
+import Combine
+import CoreLocation
 import Foundation
 
 struct ChildDevice: Identifiable, Codable, Hashable {
@@ -72,11 +74,61 @@ struct FamilyAlert: Identifiable, Codable, Hashable {
     }
 }
 
+struct SafePlace: Identifiable, Codable, Hashable {
+    let id: UUID
+    var name: String
+    var latitude: Double
+    var longitude: Double
+    var radiusMeters: Double
+    var createdAt: Date
+
+    init(
+        id: UUID = UUID(),
+        name: String,
+        latitude: Double,
+        longitude: Double,
+        radiusMeters: Double = 500,
+        createdAt: Date = Date()
+    ) {
+        self.id = id
+        self.name = name
+        self.latitude = latitude
+        self.longitude = longitude
+        self.radiusMeters = radiusMeters
+        self.createdAt = createdAt
+    }
+
+    var coordinate: CLLocationCoordinate2D {
+        CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
+
+    func distanceMeters(to coordinate: CLLocationCoordinate2D) -> CLLocationDistance {
+        CLLocation(latitude: latitude, longitude: longitude).distance(
+            from: CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+        )
+    }
+}
+
+struct ChildLocationSnapshot: Codable, Hashable {
+    var childName: String
+    var latitude: Double
+    var longitude: Double
+    var accuracyMeters: Double
+    var createdAt: Date
+    var status: String
+
+    var coordinateText: String {
+        "\(String(format: "%.5f", latitude)), \(String(format: "%.5f", longitude))"
+    }
+}
+
 @MainActor
 final class FamilyAlertStore: ObservableObject {
     @Published private(set) var devices: [ChildDevice] = []
     @Published private(set) var alerts: [FamilyAlert] = []
     @Published private(set) var pairingCode: String = FamilyAlertStore.makePairingCode()
+    @Published private(set) var safePlaces: [SafePlace] = []
+    @Published private(set) var latestLocation: ChildLocationSnapshot?
 
     private let storageKey = "heimdall.family.alert.store.v2"
 
@@ -102,6 +154,16 @@ final class FamilyAlertStore: ObservableObject {
 
     var firstTrustedAdultCallURL: URL? {
         devices.first?.trustedAdultCallURL
+    }
+
+    var locationStatusText: String {
+        if let latestLocation {
+            return "\(latestLocation.childName): \(latestLocation.status)"
+        }
+        if safePlaces.isEmpty {
+            return "Добавьте дом, школу или другую безопасную зону."
+        }
+        return "Безопасных зон: \(safePlaces.count). Ожидаю геолокацию ребёнка."
     }
 
     nonisolated static func makePairingCode() -> String {
@@ -157,6 +219,113 @@ final class FamilyAlertStore: ObservableObject {
             return updated
         }
         save()
+    }
+
+    func addSafePlace(name: String, latitude: Double, longitude: Double, radiusMeters: Double) {
+        let place = SafePlace(
+            name: cleaned(name, fallback: "Безопасная зона"),
+            latitude: latitude,
+            longitude: longitude,
+            radiusMeters: max(100, min(radiusMeters, 10_000))
+        )
+        safePlaces.insert(place, at: 0)
+        safePlaces = Array(safePlaces.prefix(12))
+        save()
+    }
+
+    func removeSafePlace(_ place: SafePlace) {
+        safePlaces.removeAll { $0.id == place.id }
+        save()
+    }
+
+    func makeLatestLocationSafePlace(name: String, radiusMeters: Double) -> Bool {
+        guard let latestLocation else { return false }
+        addSafePlace(
+            name: name,
+            latitude: latestLocation.latitude,
+            longitude: latestLocation.longitude,
+            radiusMeters: radiusMeters
+        )
+        return true
+    }
+
+    func recordChildLocation(
+        childName: String,
+        coordinate: CLLocationCoordinate2D,
+        accuracyMeters: CLLocationAccuracy
+    ) -> FamilyAlert? {
+        let resolvedName = resolvedChildName(childName)
+        guard !safePlaces.isEmpty else {
+            latestLocation = ChildLocationSnapshot(
+                childName: resolvedName,
+                latitude: coordinate.latitude,
+                longitude: coordinate.longitude,
+                accuracyMeters: max(0, accuracyMeters),
+                createdAt: Date(),
+                status: "точка получена, но безопасные зоны ещё не заданы"
+            )
+            save()
+            return nil
+        }
+
+        let nearest = nearestSafePlace(to: coordinate)
+        if let nearest, nearest.distance <= nearest.place.radiusMeters {
+            latestLocation = ChildLocationSnapshot(
+                childName: resolvedName,
+                latitude: coordinate.latitude,
+                longitude: coordinate.longitude,
+                accuracyMeters: max(0, accuracyMeters),
+                createdAt: Date(),
+                status: "в безопасной зоне \(nearest.place.name)"
+            )
+            updateDeviceLocationStatus("\(nearest.place.name): в зоне", childName: resolvedName)
+            save()
+            return nil
+        }
+
+        let distanceText = nearest.map { Self.formatMeters($0.distance) } ?? "неизвестно"
+        latestLocation = ChildLocationSnapshot(
+            childName: resolvedName,
+            latitude: coordinate.latitude,
+            longitude: coordinate.longitude,
+            accuracyMeters: max(0, accuracyMeters),
+            createdAt: Date(),
+            status: "вне безопасных зон, ближайшая зона \(distanceText)"
+        )
+
+        let reasons = ["Геолокация", "Вне безопасной зоны"]
+        if isDuplicateAlert(level: .high, score: 72, reasons: reasons, childName: resolvedName) {
+            updateDeviceLocationStatus("Вне безопасной зоны", childName: resolvedName)
+            save()
+            return nil
+        }
+
+        let alert = FamilyAlert(
+            childName: resolvedName,
+            score: 72,
+            level: .high,
+            reasons: reasons,
+            summary: "Ребёнок находится вне заданных безопасных зон. Последняя точка: \(LocationSafetyManager.format(coordinate))."
+        )
+        alerts.insert(alert, at: 0)
+        alerts = Array(alerts.prefix(20))
+        updateDeviceLocationStatus("Вне безопасной зоны", childName: resolvedName)
+        save()
+        return alert
+    }
+
+    func addLocationTestAlert(childName: String) -> FamilyAlert {
+        let alert = FamilyAlert(
+            childName: resolvedChildName(childName),
+            score: 72,
+            level: .high,
+            reasons: ["Геолокация", "Тест вне зоны"],
+            summary: "Тестовая гео-тревога: ребёнок вышел за пределы безопасной зоны."
+        )
+        alerts.insert(alert, at: 0)
+        alerts = Array(alerts.prefix(20))
+        save()
+        return alert
     }
 
     func recordRisk(result: RiskResult, childName: String) -> FamilyAlert? {
@@ -222,6 +391,8 @@ final class FamilyAlertStore: ObservableObject {
     func reset() {
         devices = []
         alerts = []
+        safePlaces = []
+        latestLocation = nil
         pairingCode = Self.makePairingCode()
         UserDefaults.standard.removeObject(forKey: storageKey)
     }
@@ -252,6 +423,31 @@ final class FamilyAlertStore: ObservableObject {
         }
     }
 
+    private func updateDeviceLocationStatus(_ status: String, childName: String) {
+        if devices.isEmpty {
+            connectChild(childName: childName, deviceName: "iPhone ребёнка", trustedAdult: "Доверенный взрослый")
+        }
+        devices = devices.map { device in
+            var updated = device
+            updated.status = status
+            updated.lastSeen = Date()
+            return updated
+        }
+    }
+
+    private func nearestSafePlace(to coordinate: CLLocationCoordinate2D) -> (place: SafePlace, distance: CLLocationDistance)? {
+        safePlaces
+            .map { place in (place: place, distance: place.distanceMeters(to: coordinate)) }
+            .min { lhs, rhs in lhs.distance < rhs.distance }
+    }
+
+    private static func formatMeters(_ meters: CLLocationDistance) -> String {
+        if meters >= 1000 {
+            return "\(String(format: "%.1f", meters / 1000)) км"
+        }
+        return "\(Int(meters.rounded())) м"
+    }
+
     private func isDuplicateAlert(level: RiskLevel, score: Int, reasons: [String], childName: String) -> Bool {
         guard let latest = alerts.first else { return false }
         let sameChild = latest.childName == resolvedChildName(childName)
@@ -269,10 +465,18 @@ final class FamilyAlertStore: ObservableObject {
         devices = state.devices
         alerts = state.alerts
         pairingCode = state.pairingCode
+        safePlaces = state.safePlaces ?? []
+        latestLocation = state.latestLocation
     }
 
     private func save() {
-        let state = State(devices: devices, alerts: alerts, pairingCode: pairingCode)
+        let state = State(
+            devices: devices,
+            alerts: alerts,
+            pairingCode: pairingCode,
+            safePlaces: safePlaces,
+            latestLocation: latestLocation
+        )
         guard let data = try? JSONEncoder().encode(state) else { return }
         UserDefaults.standard.set(data, forKey: storageKey)
     }
@@ -281,5 +485,7 @@ final class FamilyAlertStore: ObservableObject {
         var devices: [ChildDevice]
         var alerts: [FamilyAlert]
         var pairingCode: String
+        var safePlaces: [SafePlace]?
+        var latestLocation: ChildLocationSnapshot?
     }
 }

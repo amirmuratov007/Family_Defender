@@ -11,7 +11,7 @@ The product focuses on risky moments:
 
 ## Current Repository Contents
 
-- `ios/` - native iOS app with parent/child role selection, local alerts, local notifications and Family Controls starter code.
+- `ios/` - native iOS app with parent/child role selection, logo assets, calmer typography, local alerts, safe-place geolocation, local notifications and Family Controls starter code.
 - `index.html`, `ru.html`, `en.html` - public product site and web demo, not the main child-safety product.
 - `style.css`, `network.js` - visual system and animated background.
 - `api/analyze.js` - serverless API endpoint for risk analysis.
@@ -21,6 +21,7 @@ The product focuses on risky moments:
 - `APPLE_DEVELOPER_CHECKLIST_RU.md` - step-by-step Apple setup checklist.
 - `APP_STORE_REVIEW_NOTES.md` - App Store Review notes.
 - `RELEASE_NOTES_20_IMPROVEMENTS_RU.md` - latest package of 20 native-app improvements.
+- `RELEASE_NOTES_LOGO_LOCATION_RU.md` - iOS logo, typography and geolocation update.
 - `PRIVACY_POLICY.md` - draft privacy policy.
 - `SECURITY_MODEL.md` - production security model.
 

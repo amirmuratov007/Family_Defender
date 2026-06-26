@@ -24,9 +24,13 @@ targets:
         CFBundleDisplayName: Heimdall
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSLocationWhenInUseUsageDescription: Heimdall использует геолокацию, чтобы проверить, находится ли ребёнок в безопасном месте.
+        NSLocationAlwaysAndWhenInUseUsageDescription: Heimdall может предупредить родителя, если ребёнок вышел за пределы безопасной зоны.
         UILaunchScreen: {}
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false
+        UIBackgroundModes:
+          - location
     entitlements:
       path: HeimdallFamilyProtection/HeimdallFamilyProtection.entitlements
     settings:

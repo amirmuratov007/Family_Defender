@@ -22,6 +22,7 @@
   - включение локальных уведомлений;
   - код подключения ребёнка;
   - счётчик непросмотренных тревог;
+  - безопасные геозоны: дом, школа, кружки;
   - тестовая тревога;
   - запрос Family Controls.
 - Детский режим:
@@ -29,8 +30,10 @@
   - проверка кода подключения;
   - кнопка `Я в безопасности`;
   - звонок доверенному взрослому;
+  - отправка текущей геолокации и мониторинг выхода из безопасной зоны;
   - проверка подозрительного сообщения;
   - создание тревоги при высоком риске.
+- Логотип Heimdall подключён как iOS assets `HeimdallLogo` и `HeimdallMark` и используется в основных экранах.
 - Локальное хранение семейного теста через `UserDefaults`.
 - Локальные iOS-уведомления через `UserNotifications`.
 - Share Extension для текста, который пользователь явно отправляет в Heimdall через Share Sheet.
@@ -101,6 +104,7 @@ Device Activity Report Extension можно добавить следующим 
 - App Groups: `group.com.heimdallgroup.familyprotection`
 - Family Controls для main app, Device Activity Monitor и Shield Configuration
 - Push Notifications для реальных тревог родителю на другой iPhone
+- Location Services и Background Modes / Location для гео-тревог
 
 ## Free vs Paid Apple Account
 

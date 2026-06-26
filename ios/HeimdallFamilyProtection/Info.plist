@@ -8,11 +8,19 @@
   <string>$(MARKETING_VERSION)</string>
   <key>CFBundleVersion</key>
   <string>$(CURRENT_PROJECT_VERSION)</string>
+  <key>NSLocationWhenInUseUsageDescription</key>
+  <string>Heimdall использует геолокацию, чтобы проверить, находится ли ребёнок в безопасном месте.</string>
+  <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+  <string>Heimdall может предупредить родителя, если ребёнок вышел за пределы безопасной зоны.</string>
   <key>UIApplicationSceneManifest</key>
   <dict>
     <key>UIApplicationSupportsMultipleScenes</key>
     <false/>
   </dict>
+  <key>UIBackgroundModes</key>
+  <array>
+    <string>location</string>
+  </array>
   <key>UILaunchScreen</key>
   <dict/>
 </dict>

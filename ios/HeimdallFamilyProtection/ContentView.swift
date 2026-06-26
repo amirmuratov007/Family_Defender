@@ -1,3 +1,4 @@
+import CoreLocation
 import SwiftUI
 
 enum AppRole: String, CaseIterable, Identifiable {
@@ -60,6 +61,7 @@ struct ContentView: View {
             .navigationTitle("Heimdall")
             .toolbarColorScheme(.dark, for: .navigationBar)
         }
+        .font(.system(.body, design: .rounded))
         .preferredColorScheme(.dark)
     }
 }
@@ -79,14 +81,12 @@ private struct RoleSelectionView: View {
                     onSelect(role)
                 } label: {
                     HStack(spacing: 14) {
-                        Image(systemName: role.icon)
-                            .font(.title2)
-                            .frame(width: 34)
+                        BrandLogo(size: 38)
                         VStack(alignment: .leading, spacing: 4) {
                             Text(role.title)
-                                .font(.headline)
+                                .font(.system(.headline, design: .rounded).weight(.semibold))
                             Text(role == .parent ? "Панель детей, тревоги и уведомления" : "Пауза, проверка сообщения и связь со взрослым")
-                                .font(.footnote)
+                                .font(.system(.footnote, design: .rounded))
                                 .foregroundStyle(.secondary)
                         }
                         Spacer()
@@ -110,18 +110,13 @@ private struct RoleHeader: View {
 
     var body: some View {
         HStack(alignment: .center, spacing: 14) {
-            Image(systemName: role.icon)
-                .font(.title2)
-                .foregroundStyle(.yellow)
-                .frame(width: 38, height: 38)
-                .background(.white.opacity(0.08))
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+            BrandLogo(size: 44)
             VStack(alignment: .leading, spacing: 2) {
                 Text("Heimdall")
-                    .font(.title.bold())
+                    .font(.system(.title2, design: .rounded).weight(.semibold))
                     .foregroundStyle(.white)
                 Text(role.shortTitle)
-                    .font(.subheadline)
+                    .font(.system(.subheadline, design: .rounded))
                     .foregroundStyle(.secondary)
             }
             Spacer()
@@ -137,6 +132,11 @@ private struct ParentAppView: View {
     @EnvironmentObject private var familyShield: FamilyShieldManager
     @EnvironmentObject private var alertStore: FamilyAlertStore
     @EnvironmentObject private var notifications: NotificationManager
+    @State private var safePlaceName = "Дом"
+    @State private var safePlaceLatitude = ""
+    @State private var safePlaceLongitude = ""
+    @State private var safePlaceRadius = "500"
+    @State private var safePlaceMessage = ""
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -208,6 +208,50 @@ private struct ParentAppView: View {
 
             PanelCard {
                 VStack(alignment: .leading, spacing: 12) {
+                    SectionTitle("Геолокация")
+                    Text(alertStore.locationStatusText)
+                        .font(.system(.footnote, design: .rounded))
+                        .foregroundStyle(.secondary)
+                    TextField("Название зоны", text: $safePlaceName)
+                        .textFieldStyle(.roundedBorder)
+                    HStack {
+                        TextField("Широта", text: $safePlaceLatitude)
+                            .keyboardType(.numbersAndPunctuation)
+                            .textFieldStyle(.roundedBorder)
+                        TextField("Долгота", text: $safePlaceLongitude)
+                            .keyboardType(.numbersAndPunctuation)
+                            .textFieldStyle(.roundedBorder)
+                    }
+                    TextField("Радиус в метрах", text: $safePlaceRadius)
+                        .keyboardType(.numberPad)
+                        .textFieldStyle(.roundedBorder)
+                    VStack(alignment: .leading, spacing: 8) {
+                        Button("Добавить зону") {
+                            addSafePlace()
+                        }
+                        .buttonStyle(.borderedProminent)
+                        Button("Текущая точка = зона") {
+                            makeLatestLocationSafe()
+                        }
+                        .buttonStyle(.bordered)
+                    }
+                    if !safePlaceMessage.isEmpty {
+                        Text(safePlaceMessage)
+                            .font(.system(.footnote, design: .rounded))
+                            .foregroundStyle(safePlaceMessage.hasPrefix("Добавлено") ? .green : .red)
+                    }
+                    if !alertStore.safePlaces.isEmpty {
+                        ForEach(alertStore.safePlaces) { place in
+                            SafePlaceRow(place: place) {
+                                alertStore.removeSafePlace(place)
+                            }
+                        }
+                    }
+                }
+            }
+
+            PanelCard {
+                VStack(alignment: .leading, spacing: 12) {
                     SectionTitle("Подключённые дети")
                     if alertStore.devices.isEmpty {
                         EmptyLine(title: "Пока нет устройств", text: "Откройте режим ребёнка на iPhone ребёнка и подключите его.")
@@ -264,11 +308,43 @@ private struct ParentAppView: View {
             notifications.refreshStatus()
         }
     }
+
+    private func addSafePlace() {
+        guard
+            let latitude = parseCoordinate(safePlaceLatitude),
+            let longitude = parseCoordinate(safePlaceLongitude)
+        else {
+            safePlaceMessage = "Введите широту и долготу."
+            return
+        }
+        guard abs(latitude) <= 90, abs(longitude) <= 180 else {
+            safePlaceMessage = "Координаты вне допустимого диапазона."
+            return
+        }
+
+        let radius = Double(safePlaceRadius.replacingOccurrences(of: ",", with: ".")) ?? 500
+        alertStore.addSafePlace(name: safePlaceName, latitude: latitude, longitude: longitude, radiusMeters: radius)
+        safePlaceMessage = "Добавлено: \(safePlaceName)."
+    }
+
+    private func makeLatestLocationSafe() {
+        let radius = Double(safePlaceRadius.replacingOccurrences(of: ",", with: ".")) ?? 500
+        if alertStore.makeLatestLocationSafePlace(name: safePlaceName, radiusMeters: radius) {
+            safePlaceMessage = "Добавлено из последней точки ребёнка."
+        } else {
+            safePlaceMessage = "Сначала получите геолокацию ребёнка."
+        }
+    }
+
+    private func parseCoordinate(_ value: String) -> Double? {
+        Double(value.trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: ",", with: "."))
+    }
 }
 
 private struct ChildAppView: View {
     @EnvironmentObject private var alertStore: FamilyAlertStore
     @EnvironmentObject private var notifications: NotificationManager
+    @EnvironmentObject private var locationManager: LocationSafetyManager
 
     @State private var childName = "Артур"
     @State private var deviceName = "iPhone ребёнка"
@@ -351,6 +427,58 @@ private struct ChildAppView: View {
 
             PanelCard {
                 VStack(alignment: .leading, spacing: 12) {
+                    SectionTitle("Геолокация")
+                    Text(locationManager.authorizationText)
+                        .font(.system(.footnote, design: .rounded))
+                        .foregroundStyle(.secondary)
+                    Text(locationManager.statusText)
+                        .font(.system(.footnote, design: .rounded))
+                        .foregroundStyle(.secondary)
+                    Text(alertStore.locationStatusText)
+                        .font(.system(.footnote, design: .rounded))
+                        .foregroundStyle(.secondary)
+                    HStack {
+                        Button("Разрешить") {
+                            locationManager.requestAuthorization()
+                        }
+                        .buttonStyle(.bordered)
+                        Button("Всегда") {
+                            locationManager.requestAlwaysAuthorization()
+                        }
+                        .buttonStyle(.bordered)
+                        if locationManager.isMonitoring {
+                            Button("Остановить") {
+                                locationManager.stopMonitoring()
+                            }
+                            .buttonStyle(.borderedProminent)
+                        } else {
+                            Button("Мониторинг") {
+                                locationManager.startMonitoring()
+                            }
+                            .buttonStyle(.borderedProminent)
+                        }
+                    }
+                    HStack {
+                        Button("Проверить сейчас") {
+                            checkCurrentLocation()
+                        }
+                        .buttonStyle(.bordered)
+                        Button("Тест вне зоны") {
+                            let alert = alertStore.addLocationTestAlert(childName: childName)
+                            notifications.sendLocationAlertNotification(alert: alert)
+                        }
+                        .buttonStyle(.bordered)
+                    }
+                    if let latest = alertStore.latestLocation {
+                        Text("Последняя точка: \(latest.coordinateText) · \(latest.createdAt, style: .time)")
+                            .font(.system(.caption, design: .rounded))
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+
+            PanelCard {
+                VStack(alignment: .leading, spacing: 12) {
                     SectionTitle("Проверить сообщение")
                     HStack {
                         Button("Опасный пример") {
@@ -392,10 +520,34 @@ private struct ChildAppView: View {
             }
         }
         .onAppear {
+            locationManager.onLocationUpdate = { coordinate, accuracy in
+                handleLocationUpdate(coordinate: coordinate, accuracy: accuracy)
+            }
             if pairingCode.isEmpty {
                 pairingCode = alertStore.pairingCode
             }
             notifications.refreshStatus()
+        }
+        .onDisappear {
+            locationManager.onLocationUpdate = nil
+        }
+    }
+
+    private func checkCurrentLocation() {
+        guard let coordinate = locationManager.lastCoordinate else {
+            locationManager.checkNow()
+            return
+        }
+        handleLocationUpdate(coordinate: coordinate, accuracy: locationManager.lastAccuracyMeters)
+    }
+
+    private func handleLocationUpdate(coordinate: CLLocationCoordinate2D, accuracy: CLLocationAccuracy) {
+        if let alert = alertStore.recordChildLocation(
+            childName: childName,
+            coordinate: coordinate,
+            accuracyMeters: accuracy
+        ) {
+            notifications.sendLocationAlertNotification(alert: alert)
         }
     }
 }
@@ -405,17 +557,36 @@ private struct HeaderBlock: View {
     let subtitle: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("HEIMDALL-GROUP")
-                .font(.caption.bold())
-                .tracking(2)
-                .foregroundStyle(.yellow)
-            Text(title)
-                .font(.largeTitle.bold())
-                .foregroundStyle(.white)
-            Text(subtitle)
-                .foregroundStyle(.secondary)
+        HStack(alignment: .top, spacing: 12) {
+            BrandLogo(size: 48)
+            VStack(alignment: .leading, spacing: 7) {
+                Text("HEIMDALL-GROUP")
+                    .font(.system(size: 11, weight: .semibold, design: .rounded))
+                    .tracking(1.4)
+                    .foregroundStyle(.yellow)
+                Text(title)
+                    .font(.system(size: 30, weight: .semibold, design: .rounded))
+                    .foregroundStyle(.white)
+                Text(subtitle)
+                    .font(.system(.subheadline, design: .rounded))
+                    .foregroundStyle(.secondary)
+            }
         }
+    }
+}
+
+private struct BrandLogo: View {
+    let size: CGFloat
+
+    var body: some View {
+        Image("HeimdallMark")
+            .resizable()
+            .scaledToFit()
+            .padding(size * 0.12)
+            .frame(width: size, height: size)
+            .background(.white.opacity(0.07))
+            .clipShape(RoundedRectangle(cornerRadius: min(8, size / 4)))
+            .accessibilityLabel("Логотип Heimdall")
     }
 }
 
@@ -438,10 +609,10 @@ private struct MetricCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(value)
-                .font(.system(size: 36, weight: .black))
+                .font(.system(size: 32, weight: .semibold, design: .rounded))
                 .foregroundStyle(.yellow)
             Text(title)
-                .font(.footnote.bold())
+                .font(.system(.footnote, design: .rounded).weight(.semibold))
                 .foregroundStyle(.secondary)
         }
         .padding(16)
@@ -459,9 +630,41 @@ private struct SectionTitle: View {
     }
 
     var body: some View {
-        Text(text)
-            .font(.title3.bold())
-            .foregroundStyle(.white)
+        HStack(spacing: 8) {
+            BrandLogo(size: 22)
+            Text(text)
+                .font(.system(.title3, design: .rounded).weight(.semibold))
+                .foregroundStyle(.white)
+        }
+    }
+}
+
+private struct SafePlaceRow: View {
+    let place: SafePlace
+    let remove: () -> Void
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: "location.fill")
+                .foregroundStyle(.yellow)
+                .frame(width: 22)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(place.name)
+                    .font(.system(.headline, design: .rounded))
+                    .foregroundStyle(.white)
+                Text("\(String(format: "%.5f", place.latitude)), \(String(format: "%.5f", place.longitude)) · радиус \(Int(place.radiusMeters)) м")
+                    .font(.system(.caption, design: .rounded))
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            Button(role: .destructive) {
+                remove()
+            } label: {
+                Image(systemName: "trash")
+            }
+            .buttonStyle(.bordered)
+        }
+        .padding(.vertical, 6)
     }
 }
 

@@ -13,7 +13,7 @@
    - child device id;
    - parent APNs token;
    - child APNs token.
-6. Детский iPhone отправляет риск-событие на backend.
+6. Детский iPhone отправляет риск-событие или гео-событие на backend.
 7. Backend отправляет push родителю через APNs.
 
 ## Минимальные endpoint
@@ -23,6 +23,7 @@ POST /api/families
 POST /api/families/{familyId}/pairing-code
 POST /api/devices/register
 POST /api/alerts
+POST /api/location-events
 GET  /api/alerts
 PATCH /api/alerts/{alertId}/ack
 ```
@@ -41,10 +42,25 @@ PATCH /api/alerts/{alertId}/ack
 }
 ```
 
+Минимальный payload гео-события:
+
+```json
+{
+  "childId": "child-device-id",
+  "latitude": 55.7558,
+  "longitude": 37.6173,
+  "accuracyMeters": 35,
+  "eventType": "outside_safe_place",
+  "nearestSafePlaceId": "home-safe-place-id",
+  "createdAt": "2026-06-26T20:00:00Z"
+}
+```
+
 ## Что нужно в Apple Developer
 
 - Apple Developer Program.
 - Push Notifications capability для main app.
+- Location Services и Background Modes / Location для детского режима.
 - APNs Auth Key.
 - Bundle ID: `com.heimdallgroup.familyprotection`.
 - Production provisioning profile.
