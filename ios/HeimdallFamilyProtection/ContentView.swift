@@ -582,10 +582,8 @@ private struct BrandLogo: View {
         Image("HeimdallMark")
             .resizable()
             .scaledToFit()
-            .padding(size * 0.12)
             .frame(width: size, height: size)
-            .background(.white.opacity(0.07))
-            .clipShape(RoundedRectangle(cornerRadius: min(8, size / 4)))
+            .shadow(color: .yellow.opacity(0.35), radius: size * 0.12, y: size * 0.04)
             .accessibilityLabel("Логотип Heimdall")
     }
 }
@@ -774,12 +772,69 @@ private struct RiskResultView: View {
 }
 
 private struct AppBackground: View {
+    private let nodes: [CGPoint] = [
+        CGPoint(x: 0.08, y: 0.10), CGPoint(x: 0.24, y: 0.16), CGPoint(x: 0.42, y: 0.08),
+        CGPoint(x: 0.62, y: 0.18), CGPoint(x: 0.86, y: 0.09), CGPoint(x: 0.16, y: 0.32),
+        CGPoint(x: 0.36, y: 0.28), CGPoint(x: 0.54, y: 0.40), CGPoint(x: 0.78, y: 0.34),
+        CGPoint(x: 0.12, y: 0.58), CGPoint(x: 0.31, y: 0.68), CGPoint(x: 0.50, y: 0.62),
+        CGPoint(x: 0.70, y: 0.72), CGPoint(x: 0.90, y: 0.55), CGPoint(x: 0.22, y: 0.88),
+        CGPoint(x: 0.48, y: 0.92), CGPoint(x: 0.82, y: 0.86)
+    ]
+
+    private let links: [(Int, Int)] = [
+        (0, 1), (1, 2), (2, 3), (3, 4), (1, 6), (5, 6), (6, 7), (7, 8),
+        (5, 9), (9, 10), (10, 11), (11, 12), (12, 13), (10, 14), (11, 15), (12, 16),
+        (2, 7), (3, 8), (7, 12), (8, 13)
+    ]
+
+    private let stars: [CGPoint] = [
+        CGPoint(x: 0.18, y: 0.07), CGPoint(x: 0.32, y: 0.11), CGPoint(x: 0.73, y: 0.12),
+        CGPoint(x: 0.93, y: 0.23), CGPoint(x: 0.05, y: 0.41), CGPoint(x: 0.43, y: 0.49),
+        CGPoint(x: 0.64, y: 0.53), CGPoint(x: 0.27, y: 0.77), CGPoint(x: 0.57, y: 0.82),
+        CGPoint(x: 0.94, y: 0.78), CGPoint(x: 0.07, y: 0.91)
+    ]
+
     var body: some View {
-        LinearGradient(
-            colors: [Color.black, Color(red: 0.08, green: 0.07, blue: 0.04)],
-            startPoint: .top,
-            endPoint: .bottom
-        )
+        ZStack {
+            LinearGradient(
+                colors: [
+                    Color(red: 0.01, green: 0.01, blue: 0.05),
+                    Color(red: 0.02, green: 0.06, blue: 0.13),
+                    Color(red: 0.03, green: 0.02, blue: 0.07),
+                    Color.black
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+
+            Canvas { context, size in
+                let resolvedNodes = nodes.map { point in
+                    CGPoint(x: point.x * size.width, y: point.y * size.height)
+                }
+                for link in links {
+                    var path = Path()
+                    path.move(to: resolvedNodes[link.0])
+                    path.addLine(to: resolvedNodes[link.1])
+                    context.stroke(path, with: .color(Color.cyan.opacity(0.16)), lineWidth: 1)
+                }
+                for point in resolvedNodes {
+                    let rect = CGRect(x: point.x - 2.5, y: point.y - 2.5, width: 5, height: 5)
+                    context.fill(Path(ellipseIn: rect), with: .color(Color.yellow.opacity(0.62)))
+                }
+                for star in stars {
+                    let point = CGPoint(x: star.x * size.width, y: star.y * size.height)
+                    let rect = CGRect(x: point.x - 0.8, y: point.y - 0.8, width: 1.6, height: 1.6)
+                    context.fill(Path(ellipseIn: rect), with: .color(Color.white.opacity(0.38)))
+                }
+            }
+            .blendMode(.screen)
+
+            LinearGradient(
+                colors: [.black.opacity(0.08), .black.opacity(0.46)],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+        }
         .ignoresSafeArea()
     }
 }

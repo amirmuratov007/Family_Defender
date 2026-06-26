@@ -11,7 +11,7 @@ The product focuses on risky moments:
 
 ## Current Repository Contents
 
-- `ios/` - native iOS app with parent/child role selection, logo assets, calmer typography, local alerts, safe-place geolocation, local notifications and Family Controls starter code.
+- `ios/` - native iOS app with parent/child role selection, logo assets, cosmic neural background, calmer typography, local alerts, safe-place geolocation, local notifications and Family Controls starter code.
 - `index.html`, `ru.html`, `en.html` - public product site and web demo, not the main child-safety product.
 - `style.css`, `network.js` - visual system and animated background.
 - `api/analyze.js` - serverless API endpoint for risk analysis.
