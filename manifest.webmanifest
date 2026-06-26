@@ -2,13 +2,13 @@
   "name": "Heimdall Family Protection",
   "short_name": "Heimdall",
   "description": "Family Protection by Heimdall-Group",
-  "start_url": "./index.html",
+  "start_url": "./en.html",
   "display": "standalone",
   "background_color": "#050506",
   "theme_color": "#050506",
   "icons": [
     {
-      "src": "shield-icon.svg",
+      "src": "heimdall-logo.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
