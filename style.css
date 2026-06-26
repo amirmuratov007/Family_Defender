@@ -39,7 +39,7 @@ a{color:inherit}
 .brand-logo{
   width:86px;
   max-width:22vw;
-  aspect-ratio:520/337;
+  aspect-ratio:280/182;
   object-fit:contain;
   filter:drop-shadow(0 0 24px rgba(212,164,66,.48));
   flex:0 0 auto;
@@ -114,7 +114,7 @@ h1{
 .hero-mark{display:grid;place-items:center;min-height:420px}
 .hero-mark img{
   width:min(100%,560px);
-  aspect-ratio:520/337;
+  aspect-ratio:280/182;
   object-fit:contain;
   filter:drop-shadow(0 0 64px rgba(212,164,66,.46));
 }
@@ -214,7 +214,7 @@ footer{
 }
 .chooser-logo{
   width:min(520px,86vw);
-  aspect-ratio:520/337;
+  aspect-ratio:280/182;
   object-fit:contain;
   filter:drop-shadow(0 0 46px rgba(212,164,66,.48));
 }
