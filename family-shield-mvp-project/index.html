@@ -1,0 +1,1038 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#16231e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Щит семьи">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.webmanifest">
+  <title>Щит семьи - полная MVP-сборка</title>
+  <style>
+    :root {
+      --ink: #17211d;
+      --muted: #63716b;
+      --line: #dbe5df;
+      --bg: #f6f9f7;
+      --panel: #ffffff;
+      --soft: #eef6f2;
+      --green: #13775a;
+      --green-soft: #dcf3e9;
+      --red: #b83434;
+      --red-soft: #fee5e3;
+      --amber: #a46613;
+      --amber-soft: #fff1d6;
+      --blue: #246aa5;
+      --blue-soft: #e4f0fb;
+      --violet: #7558a6;
+      --violet-soft: #eee8fa;
+      --shadow: 0 18px 48px rgba(28, 44, 37, .11);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); }
+    button, input, textarea, select { font: inherit; }
+    button { border: 0; cursor: pointer; }
+
+    .shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 286px 1fr;
+    }
+
+    .side {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 22px 16px;
+      color: #eef8f3;
+      background: #16231e;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .brand {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: linear-gradient(145deg, #6bd4b0, #42a4d6);
+      display: grid;
+      place-items: center;
+      color: #10201a;
+      font-weight: 900;
+      flex: 0 0 auto;
+    }
+
+    .brand h1 { margin: 0; font-size: 19px; line-height: 1.05; letter-spacing: 0; }
+    .brand span { font-size: 12px; color: #b6c9c1; }
+
+    .profile {
+      border: 1px solid rgba(255,255,255,.13);
+      background: rgba(255,255,255,.08);
+      border-radius: 8px;
+      padding: 13px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .person {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #355170;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-weight: 850;
+      flex: 0 0 auto;
+    }
+
+    .person strong { display: block; font-size: 14px; }
+    .person small { color: #b6c9c1; font-size: 12px; }
+
+    .mode-select {
+      width: 100%;
+      color: #eef8f3;
+      background: rgba(255,255,255,.09);
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 8px;
+      padding: 9px;
+      outline: none;
+    }
+
+    .nav {
+      display: grid;
+      gap: 7px;
+    }
+
+    .nav button {
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #dcebe5;
+      background: transparent;
+      border-radius: 8px;
+      padding: 10px 11px;
+      text-align: left;
+    }
+
+    .nav button[aria-selected="true"] {
+      background: #f4fbf8;
+      color: #12211b;
+    }
+
+    .nav svg, .btn svg, .icon svg { width: 18px; height: 18px; stroke-width: 2.2; }
+
+    .side-note {
+      margin-top: auto;
+      border-top: 1px solid rgba(255,255,255,.13);
+      padding-top: 14px;
+      color: #b6c9c1;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    main {
+      padding: 26px;
+      display: grid;
+      gap: 18px;
+      align-content: start;
+      background:
+        linear-gradient(120deg, rgba(19,119,90,.08), rgba(36,106,165,.08) 46%, rgba(164,102,19,.07)),
+        var(--bg);
+    }
+
+    .top {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: start;
+      gap: 16px;
+    }
+
+    h2 { margin: 0 0 6px; font-size: clamp(28px, 4vw, 42px); line-height: 1; letter-spacing: 0; }
+    .lead { margin: 0; color: var(--muted); max-width: 920px; line-height: 1.45; }
+
+    .live {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 10px 13px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,.82);
+      color: var(--green);
+      font-weight: 800;
+      white-space: nowrap;
+      box-shadow: 0 8px 26px rgba(28,44,37,.08);
+    }
+
+    .pulse {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 8px rgba(19,119,90,.13);
+    }
+
+    .view { display: none; gap: 16px; }
+    .view.active { display: grid; }
+
+    .grid { display: grid; gap: 14px; }
+    .metrics { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .two { grid-template-columns: minmax(0, 1.2fr) minmax(320px, .8fr); align-items: start; }
+    .three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .panel {
+      background: rgba(255,255,255,.88);
+      border: 1px solid rgba(219,229,223,.92);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      padding: 17px 17px 0;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .panel-head h3 { margin: 0; font-size: 18px; letter-spacing: 0; }
+    .panel-head p { margin: 5px 0 0; color: var(--muted); font-size: 13px; line-height: 1.4; }
+    .panel-body { padding: 17px; }
+
+    .metric {
+      min-height: 126px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .metric small { color: var(--muted); line-height: 1.3; }
+    .metric strong { font-size: 31px; line-height: 1; }
+    .metric span { font-size: 12px; font-weight: 800; }
+
+    .red { color: var(--red); }
+    .amber { color: var(--amber); }
+    .green { color: var(--green); }
+    .blue { color: var(--blue); }
+    .violet { color: var(--violet); }
+
+    .badge {
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 12px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .badge.red { background: var(--red-soft); color: var(--red); }
+    .badge.amber { background: var(--amber-soft); color: var(--amber); }
+    .badge.green { background: var(--green-soft); color: var(--green); }
+    .badge.blue { background: var(--blue-soft); color: var(--blue); }
+    .badge.violet { background: var(--violet-soft); color: var(--violet); }
+
+    .row-list { display: grid; gap: 11px; }
+
+    .item {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      padding: 13px;
+      display: grid;
+      gap: 9px;
+    }
+
+    .item-top {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 11px;
+      align-items: center;
+    }
+
+    .icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: var(--soft);
+      display: grid;
+      place-items: center;
+      color: var(--green);
+    }
+
+    .item h4 { margin: 0 0 3px; font-size: 15px; }
+    .item p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.4; }
+
+    .factors {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .factor {
+      border-radius: 999px;
+      padding: 6px 8px;
+      background: var(--soft);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 760;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 2px;
+    }
+
+    .btn {
+      min-height: 38px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      background: #17231f;
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: 850;
+    }
+
+    .btn.secondary {
+      background: var(--soft);
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+
+    .btn.danger { background: var(--red); }
+    .btn.good { background: var(--green); }
+
+    .incident {
+      display: grid;
+      gap: 13px;
+    }
+
+    .incident-stage {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .bar {
+      height: 12px;
+      border-radius: 999px;
+      background: #e7efeb;
+      overflow: hidden;
+    }
+
+    .bar span { display: block; height: 100%; border-radius: inherit; }
+
+    .quote {
+      border-left: 4px solid var(--red);
+      background: var(--red-soft);
+      padding: 11px 12px;
+      border-radius: 0 8px 8px 0;
+      color: #572121;
+      line-height: 1.42;
+      font-size: 14px;
+    }
+
+    .phone-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      align-items: start;
+    }
+
+    .phone {
+      width: min(100%, 342px);
+      margin: 0 auto;
+      aspect-ratio: 9 / 18.6;
+      border-radius: 34px;
+      background: #111b17;
+      padding: 13px;
+      box-shadow: 0 24px 58px rgba(23,35,31,.22);
+    }
+
+    .screen {
+      height: 100%;
+      border-radius: 25px;
+      overflow: hidden;
+      background: #f7faf8;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid rgba(255,255,255,.23);
+    }
+
+    .screen-head {
+      background: #1f8768;
+      color: #fff;
+      padding: 15px 13px 11px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .screen-head.elder { background: #246aa5; }
+    .screen-head strong { display: block; font-size: 14px; }
+    .screen-head small { opacity: .84; font-size: 11px; }
+
+    .chat {
+      padding: 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      flex: 1;
+      overflow: auto;
+    }
+
+    .bubble {
+      max-width: 88%;
+      padding: 9px 10px;
+      border-radius: 12px;
+      border: 1px solid #dbe3df;
+      background: #fff;
+      font-size: 13px;
+      line-height: 1.32;
+    }
+
+    .bubble.me { margin-left: auto; background: var(--green-soft); border-top-right-radius: 4px; }
+    .bubble.them { border-top-left-radius: 4px; }
+
+    .warning {
+      margin: 0 11px 11px;
+      border: 1px solid #efc36b;
+      background: var(--amber-soft);
+      border-radius: 8px;
+      padding: 10px;
+      color: #53370d;
+      font-size: 12px;
+      line-height: 1.36;
+    }
+
+    .warning strong { display: block; color: #372406; margin-bottom: 4px; }
+
+    textarea {
+      width: 100%;
+      min-height: 210px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fff;
+      color: var(--ink);
+      line-height: 1.45;
+    }
+
+    .score-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 14px;
+      display: grid;
+      gap: 11px;
+    }
+
+    .score-num { font-size: 46px; line-height: 1; font-weight: 900; }
+
+    .switch-card {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      padding: 13px;
+    }
+
+    .switch-card strong { display: block; margin-bottom: 4px; }
+    .switch-card span { color: var(--muted); font-size: 13px; line-height: 1.38; }
+
+    .switch input {
+      appearance: none;
+      width: 46px;
+      height: 27px;
+      border-radius: 999px;
+      background: #ccd8d2;
+      position: relative;
+      outline: none;
+    }
+
+    .switch input:checked { background: var(--green); }
+    .switch input::after {
+      content: "";
+      width: 21px;
+      height: 21px;
+      border-radius: 50%;
+      background: #fff;
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      transition: .18s;
+      box-shadow: 0 2px 7px rgba(0,0,0,.22);
+    }
+
+    .switch input:checked::after { left: 22px; }
+
+    .table {
+      display: grid;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .table-row {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr .8fr .7fr;
+      gap: 10px;
+      padding: 12px;
+      border-bottom: 1px solid var(--line);
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .table-row:last-child { border-bottom: 0; }
+    .table-row.head { background: var(--soft); font-weight: 850; color: var(--muted); }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      max-width: 360px;
+      padding: 13px 14px;
+      background: #17231f;
+      color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 18px 50px rgba(0,0,0,.22);
+      transform: translateY(90px);
+      opacity: 0;
+      pointer-events: none;
+      transition: .2s;
+      z-index: 20;
+      line-height: 1.38;
+      font-size: 13px;
+    }
+
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    @media (max-width: 1180px) {
+      .shell { grid-template-columns: 1fr; }
+      .side { height: auto; position: relative; }
+      .nav { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .nav button { justify-content: center; text-align: center; }
+      .nav span { display: none; }
+      .side-note { display: none; }
+      .metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .two, .three { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      main { padding: 17px; }
+      .top { grid-template-columns: 1fr; }
+      .metrics, .two, .three, .phone-row { grid-template-columns: 1fr; }
+      .item-top { grid-template-columns: auto 1fr; }
+      .item-top .badge { grid-column: 2; justify-self: start; }
+      .incident-stage { grid-template-columns: 1fr; }
+      .switch-card { grid-template-columns: 1fr; }
+      .table-row { grid-template-columns: 1fr; gap: 5px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="side">
+      <div class="brand">
+        <div class="logo">Щ</div>
+        <div>
+          <h1>Щит семьи</h1>
+          <span>полная MVP-сборка</span>
+        </div>
+      </div>
+
+      <div class="profile">
+        <div class="person">
+          <div class="avatar" id="avatar">А</div>
+          <div>
+            <strong id="profileName">Артем, 14</strong>
+            <small id="profileMeta">подросток · игровые чаты</small>
+          </div>
+        </div>
+        <select class="mode-select" id="modeSelect" aria-label="Профиль защиты">
+          <option value="teen">Подросток: минимум слежки</option>
+          <option value="child">Младший ребенок: жестче</option>
+          <option value="elder">Пожилой родственник</option>
+        </select>
+      </div>
+
+      <nav class="nav" aria-label="Разделы продукта">
+        <button data-tab="command" aria-selected="true" type="button" title="Командный центр">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 12l2-2 7-7 7 7 2 2"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg><span>Центр</span>
+        </button>
+        <button data-tab="radar" aria-selected="false" type="button" title="Радар контактов">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/><circle cx="12" cy="12" r="2"/></svg><span>Радар</span>
+        </button>
+        <button data-tab="incident" aria-selected="false" type="button" title="Инцидент">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10.3 3.4 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.4a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg><span>Инцидент</span>
+        </button>
+        <button data-tab="phones" aria-selected="false" type="button" title="Экраны защиты">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg><span>Экраны</span>
+        </button>
+        <button data-tab="lab" aria-selected="false" type="button" title="Лаборатория риска">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 3v5l-5 9a3 3 0 0 0 2.6 4h10.8A3 3 0 0 0 20 17l-5-9V3"/><path d="M8 3h8"/><path d="M7 14h10"/></svg><span>Лаб</span>
+        </button>
+        <button data-tab="playbook" aria-selected="false" type="button" title="Сценарии родителя">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"/></svg><span>Сценарии</span>
+        </button>
+        <button data-tab="pilot" aria-selected="false" type="button" title="Пилот">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 6 9 17l-5-5"/><path d="M21 12a9 9 0 1 1-3.4-7"/></svg><span>Пилот</span>
+        </button>
+        <button data-tab="settings" aria-selected="false" type="button" title="Настройки">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.05.05a2 2 0 1 1-2.83 2.83l-.05-.05A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 8.6 19a1.7 1.7 0 0 0-1.88.34l-.05.05a2 2 0 1 1-2.83-2.83l.05-.05A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H3a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 5 8.6a1.7 1.7 0 0 0-.34-1.88l-.05-.05a2 2 0 1 1 2.83-2.83l.05.05A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V3a2 2 0 1 1 4 0v.1A1.7 1.7 0 0 0 15.4 5a1.7 1.7 0 0 0 1.88-.34l.05-.05a2 2 0 1 1 2.83 2.83l-.05.05A1.7 1.7 0 0 0 19.4 9c.2.4.6.8 1 1 .4.2.8.4 1.1.4h.5a2 2 0 1 1 0 4h-.5a1.7 1.7 0 0 0-2.1.6z"/></svg><span>Настройки</span>
+        </button>
+      </nav>
+
+      <div class="side-note">Пилот должен быть прозрачным: ребенок знает, что защита ловит опасные сценарии, а не читает всю жизнь.</div>
+    </aside>
+
+    <main>
+      <section class="top">
+        <div>
+          <h2 id="pageTitle">Командный центр</h2>
+          <p class="lead" id="pageLead">Родитель видит не поток переписок, а риск-события: кто новый, откуда пришел, почему контакт стал опасным и что сделать прямо сейчас.</p>
+        </div>
+        <div class="live"><span class="pulse"></span><span id="liveText">Защита активна</span></div>
+      </section>
+
+      <section id="command" class="view active">
+        <div class="grid metrics" id="metrics"></div>
+        <div class="grid two">
+          <article class="panel">
+            <div class="panel-head">
+              <div><h3>События сейчас</h3><p>Сначала показываем то, где есть изоляция, давление или попытка вывести к действию.</p></div>
+              <span class="badge red">1 срочно</span>
+            </div>
+            <div class="panel-body row-list" id="liveEvents"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head">
+              <div><h3>Следующее лучшее действие</h3><p>Продукт помогает родителю не ругаться, а быстро вернуть ребенка в контакт с настоящим взрослым.</p></div>
+            </div>
+            <div class="panel-body incident">
+              <div class="quote">“Я не злюсь и не буду отбирать телефон. Просто давай вместе проверим человека, который просит секрет и код.”</div>
+              <button class="btn danger" type="button" data-toast="Сценарий звонка открыт: спокойно, без обвинения, сначала безопасность.">Позвонить и открыть сценарий</button>
+              <button class="btn secondary" type="button" data-toast="Антискам-пауза на 15 минут включена для ссылок, банков и установок приложений.">Включить паузу на 15 минут</button>
+              <button class="btn secondary" type="button" data-toast="Контакт отправлен на ручную проверку доверенным взрослым.">Отправить контакт на проверку</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="radar" class="view">
+        <div class="grid two">
+          <article class="panel">
+            <div class="panel-head">
+              <div><h3>Радар новых контактов</h3><p>Контакт становится тревожным, когда появляется траектория: игра, личка, секрет, срочность, деньги или код.</p></div>
+            </div>
+            <div class="panel-body row-list" id="contactList"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head">
+              <div><h3>Карта риска</h3><p>Баллы понятны родителю и объяснимы ребенку.</p></div>
+            </div>
+            <div class="panel-body incident" id="riskLadder"></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="incident" class="view">
+        <div class="grid two">
+          <article class="panel">
+            <div class="panel-head">
+              <div><h3>Карточка инцидента</h3><p>Минимум приватных данных, максимум смысла: почему тревога и какое действие остановить.</p></div>
+              <span class="badge red">риск 94</span>
+            </div>
+            <div class="panel-body incident">
+              <div class="item">
+                <div class="item-top">
+                  <div class="avatar">GH</div>
+                  <div><h4>@game_helper77</h4><p>Minecraft RU -> личка Telegram. Аккаунт без номера, появился сегодня.</p></div>
+                  <span class="badge red">Высокий</span>
+                </div>
+                <div class="factors">
+                  <span class="factor">новый контакт</span><span class="factor">из игры</span><span class="factor">секретность</span><span class="factor">банк</span><span class="factor">код</span>
+                </div>
+              </div>
+              <div class="quote">“Только родителям не говори. Нужно срочно открыть банк и прислать код, иначе аккаунт заблокируют.”</div>
+              <div class="incident-stage"><strong>Знакомство</strong><div class="bar"><span style="width:35%;background:var(--blue)"></span></div></div>
+              <div class="incident-stage"><strong>Изоляция</strong><div class="bar"><span style="width:86%;background:var(--amber)"></span></div></div>
+              <div class="incident-stage"><strong>Действие</strong><div class="bar"><span style="width:94%;background:var(--red)"></span></div></div>
+              <div class="actions">
+                <button class="btn danger" data-toast="Родителю отправлен срочный push и сценарий разговора." type="button">Срочный push</button>
+                <button class="btn secondary" data-toast="Контакт помечен как опасный до ручной проверки." type="button">Пометить опасным</button>
+                <button class="btn secondary" data-toast="Событие сохранено в отчет пилота." type="button">В отчет</button>
+              </div>
+            </div>
+          </article>
+          <article class="panel">
+            <div class="panel-head">
+              <div><h3>Что увидит родитель</h3><p>Не “прочитай все сообщения”, а короткое объяснение риска и спокойный план.</p></div>
+            </div>
+            <div class="panel-body row-list">
+              <div class="item"><h4>1. Сначала звонок</h4><p>Не писать в чат мошеннику. Позвонить ребенку голосом и сказать, что он не виноват.</p></div>
+              <div class="item"><h4>2. Остановить действие</h4><p>Попросить не открывать банк, не отправлять коды, не ставить приложения, не удалять переписку.</p></div>
+              <div class="item"><h4>3. Зафиксировать контакт</h4><p>Скрин ника, источник знакомства, ссылку на профиль. Не вступать в агрессивный диалог.</p></div>
+              <div class="item"><h4>4. Разобрать после</h4><p>Коротко объяснить паттерн: секретность плюс срочность плюс код почти всегда мошенничество.</p></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="phones" class="view">
+        <div class="phone-row">
+          <article class="panel">
+            <div class="panel-head"><div><h3>Экран ребенка</h3><p>Мягкий тормоз в момент манипуляции.</p></div></div>
+            <div class="panel-body">
+              <div class="phone"><div class="screen">
+                <div class="screen-head"><div class="avatar">G</div><div><strong>game_helper77</strong><small>новый контакт · из игрового чата</small></div></div>
+                <div class="chat">
+                  <div class="bubble them">Ты норм играешь, го в личку, дам приватный сервер.</div>
+                  <div class="bubble me">Ок, что надо?</div>
+                  <div class="bubble them">Только родителям не говори, они не поймут. Срочно открой банк.</div>
+                  <div class="bubble them">Там будет код, скинь скрин.</div>
+                </div>
+                <div class="warning"><strong>Сделай паузу</strong>Новый человек просит секрет и банковский код. Не отправляй ничего. Позвони взрослому.</div>
+              </div></div>
+            </div>
+          </article>
+          <article class="panel">
+            <div class="panel-head"><div><h3>Экран пожилого родственника</h3><p>Тон уважительный, без ощущения контроля.</p></div></div>
+            <div class="panel-body">
+              <div class="phone"><div class="screen">
+                <div class="screen-head elder"><div class="avatar">Б</div><div><strong>Служба безопасности?</strong><small>неизвестный номер · высокий риск</small></div></div>
+                <div class="chat">
+                  <div class="bubble them">Ваш счет под угрозой. Нужно срочно перевести деньги на безопасный счет.</div>
+                  <div class="bubble them">Никому не сообщайте, идет операция.</div>
+                  <div class="bubble me">Я сейчас сделаю.</div>
+                </div>
+                <div class="warning"><strong>Похоже на мошенничество</strong>Банки и полиция не просят переводить деньги и хранить секрет от семьи. Позвоните доверенному человеку.</div>
+              </div></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="lab" class="view">
+        <article class="panel">
+          <div class="panel-head">
+            <div><h3>Лаборатория проверки диалога</h3><p>Вставьте фрагмент переписки: демо покажет риск, триггеры и рекомендуемое вмешательство.</p></div>
+          </div>
+          <div class="panel-body grid two">
+            <div>
+              <textarea id="dialogInput">Привет, ты хорошо играешь. Давай перейдем в телеграм. Только родителям не говори, это секрет. Срочно открой банк и пришли код, иначе аккаунт заблокируют.</textarea>
+              <div class="actions">
+                <button class="btn" id="analyzeBtn" type="button">Проверить риск</button>
+                <button class="btn secondary" id="caseGame" type="button">Сценарий игры</button>
+                <button class="btn secondary" id="caseElder" type="button">Сценарий банка</button>
+                <button class="btn secondary" id="caseSafe" type="button">Безопасный</button>
+              </div>
+            </div>
+            <div class="score-card">
+              <div class="score-num red" id="scoreNum">0</div>
+              <strong id="scoreTitle">Оценка</strong>
+              <p id="scoreText" class="lead">Проверка еще не запускалась.</p>
+              <div class="factors" id="scoreFactors"></div>
+              <button class="btn danger" id="simulatePush" type="button">Сымитировать push родителю</button>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section id="playbook" class="view">
+        <div class="grid three">
+          <article class="panel"><div class="panel-head"><div><h3>Как говорить</h3><p>Сначала безопасность, потом разбор.</p></div></div><div class="panel-body row-list" id="talkScripts"></div></article>
+          <article class="panel"><div class="panel-head"><div><h3>Чего не делать</h3><p>Давление родителя помогает мошеннику изолировать ребенка.</p></div></div><div class="panel-body row-list" id="dontList"></div></article>
+          <article class="panel"><div class="panel-head"><div><h3>После инцидента</h3><p>Фиксация, обучение, настройка правил.</p></div></div><div class="panel-body row-list" id="afterList"></div></article>
+        </div>
+      </section>
+
+      <section id="pilot" class="view">
+        <div class="grid two">
+          <article class="panel">
+            <div class="panel-head"><div><h3>План домашнего пилота</h3><p>Тестируем не скрытую слежку, а понятность предупреждений и отсутствие лишнего шума.</p></div></div>
+            <div class="panel-body table" id="pilotTable"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head"><div><h3>Критерии готовности</h3><p>Когда можно переходить от прототипа к Android-разработке.</p></div></div>
+            <div class="panel-body row-list">
+              <label class="switch-card"><span><strong>Ребенок понимает правила</strong>Он знает, что ловятся только опасные сценарии: секретность, коды, деньги, удаленный доступ.</span><span class="switch"><input type="checkbox" checked></span></label>
+              <label class="switch-card"><span><strong>Родитель не получает шум</strong>Обычные школьные и игровые сообщения не превращаются в тревоги.</span><span class="switch"><input type="checkbox" checked></span></label>
+              <label class="switch-card"><span><strong>Есть доверенный круг</strong>Минимум два взрослых, которые могут быстро позвонить.</span><span class="switch"><input type="checkbox" checked></span></label>
+              <label class="switch-card"><span><strong>Есть разбор без наказания</strong>После тревоги ребенок не боится показать следующую подозрительную переписку.</span><span class="switch"><input type="checkbox"></span></label>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="settings" class="view">
+        <div class="grid two">
+          <article class="panel">
+            <div class="panel-head"><div><h3>Защитные правила</h3><p>В реальном приложении это управляет Notification Listener, Accessibility-паузой и push-уведомлениями.</p></div></div>
+            <div class="panel-body row-list" id="settingsList"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head"><div><h3>Архитектура MVP</h3><p>Минимальный состав, который можно отдавать разработчикам.</p></div></div>
+            <div class="panel-body row-list" id="architectureList"></div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const state = {
+      mode: "teen",
+      contacts: [
+        { initials: "GH", name: "@game_helper77", source: "Minecraft RU -> Telegram", score: 94, level: "Высокий", color: "red", factors: ["новый", "из игры", "секрет", "банк", "код"] },
+        { initials: "RL", name: "@roblox_lena", source: "Roblox -> Telegram", score: 61, level: "Средний", color: "amber", factors: ["новый", "переход в личку", "ночью"] },
+        { initials: "DS", name: "@discord_squad", source: "Discord сервер", score: 48, level: "Средний", color: "amber", factors: ["скрытый номер", "новый ник"] },
+        { initials: "К", name: "Кирилл 8Б", source: "школьный чат", score: 12, level: "Низкий", color: "green", factors: ["подтвержден"] },
+        { initials: "М", name: "Мама", source: "семья", score: 0, level: "Доверенный", color: "blue", factors: ["доверенный круг"] }
+      ],
+      events: [
+        { kind: "red", title: "Новый контакт просит секрет и банковский код", text: "@game_helper77 пришел из Minecraft RU, за 11 минут перевел разговор в личку и попросил открыть банк.", factors: ["секретность", "срочность", "код", "банк"] },
+        { kind: "amber", title: "Переход из игрового чата в личку", text: "@roblox_lena предложила продолжить в Telegram после Roblox-чата.", factors: ["новый контакт", "миграция"] },
+        { kind: "green", title: "Ссылка остановлена антискам-паузой", text: "Сокращенная ссылка не открыта, ребенку показана кнопка звонка взрослому.", factors: ["ссылка", "пауза"] }
+      ]
+    };
+
+    const pageCopy = {
+      command: ["Командный центр", "Родитель видит не поток переписок, а риск-события: кто новый, откуда пришел, почему контакт стал опасным и что сделать прямо сейчас."],
+      radar: ["Радар знакомств", "Ранняя защита начинается там, где незнакомец из игры или группы уводит ребенка в личную переписку."],
+      incident: ["Карточка инцидента", "Один опасный контакт разбирается как цепочка: источник, изоляция, давление, действие, родительская реакция."],
+      phones: ["Экраны защиты", "Так выглядит вмешательство на телефоне ребенка или пожилого родственника в момент манипуляции."],
+      lab: ["Лаборатория риска", "Демо-анализатор помогает настраивать правила, проверять фразы и показывать принцип работы без доступа к реальным перепискам."],
+      playbook: ["Сценарии родителя", "Продукт должен не только ловить риск, но и учить взрослых реагировать спокойно, чтобы ребенок не ушел в секретность."],
+      pilot: ["Пилотирование", "Домашний пилот проверяет доверие, понятность предупреждений, шум уведомлений и качество реакции семьи."],
+      settings: ["Настройки и архитектура", "Гибкие уровни контроля для младшего ребенка, подростка и пожилого родственника."]
+    };
+
+    const triggerMap = [
+      { label: "секретность", weight: 24, words: ["секрет", "не говори", "никому не говори", "не показывай", "удали чат"] },
+      { label: "срочность", weight: 18, words: ["срочно", "быстро", "прямо сейчас", "иначе", "заблокируют"] },
+      { label: "банк или деньги", weight: 30, words: ["банк", "карта", "деньги", "кредит", "переведи", "счет", "кошелек"] },
+      { label: "код или доступ", weight: 30, words: ["код", "пароль", "скрин", "доступ", "подтвердить", "одноразовый"] },
+      { label: "миграция в личку", weight: 16, words: ["в телеграм", "в тг", "в личку", "перейдем", "напиши мне"] },
+      { label: "ложный авторитет", weight: 20, words: ["полиция", "фсб", "служба безопасности", "банк россии", "операция"] },
+      { label: "удаленный доступ", weight: 38, words: ["anydesk", "rustdesk", "teamviewer", "установи приложение", "демонстрация экрана"] },
+      { label: "родители как враг", weight: 20, words: ["родители не поймут", "мама не поймет", "папа не поймет", "тебя накажут"] }
+    ];
+
+    function icon(kind) {
+      if (kind === "red") return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10.3 3.4 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.4a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>';
+      if (kind === "amber") return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 8v5"/><path d="M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>';
+      return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 6 9 17l-5-5"/></svg>';
+    }
+
+    function renderMetrics() {
+      const modeBoost = state.mode === "child" ? 2 : state.mode === "elder" ? -1 : 0;
+      const metrics = [
+        ["Новых контактов", "6", "2 из игровых чатов", "blue"],
+        ["Высокий риск", String(1 + Math.max(0, modeBoost)), "секрет + код + банк", "red"],
+        ["Паузы сработали", "3", "за последние 24 часа", "amber"],
+        ["Доверенных взрослых", "3", "мама, папа, тетя", "green"],
+        ["Шум уведомлений", "низкий", "4 из 51 событий", "violet"]
+      ];
+      document.querySelector("#metrics").innerHTML = metrics.map(([a,b,c,color]) => `<article class="panel metric"><small>${a}</small><strong class="${color}">${b}</strong><span class="${color}">${c}</span></article>`).join("");
+    }
+
+    function renderEvents() {
+      document.querySelector("#liveEvents").innerHTML = state.events.map(event => `
+        <article class="item">
+          <div class="item-top">
+            <div class="icon ${event.kind}">${icon(event.kind)}</div>
+            <div><h4>${event.title}</h4><p>${event.text}</p></div>
+            <span class="badge ${event.kind}">${event.kind === "red" ? "Срочно" : event.kind === "amber" ? "Проверить" : "Остановлено"}</span>
+          </div>
+          <div class="factors">${event.factors.map(f => `<span class="factor">${f}</span>`).join("")}</div>
+        </article>
+      `).join("");
+    }
+
+    function renderContacts() {
+      document.querySelector("#contactList").innerHTML = state.contacts.map(contact => `
+        <article class="item">
+          <div class="item-top">
+            <div class="avatar">${contact.initials}</div>
+            <div><h4>${contact.name}</h4><p>${contact.source}. Риск: ${contact.score}/100.</p></div>
+            <span class="badge ${contact.color}">${contact.level}</span>
+          </div>
+          <div class="factors">${contact.factors.map(f => `<span class="factor">${f}</span>`).join("")}</div>
+        </article>
+      `).join("");
+    }
+
+    function renderRiskLadder() {
+      const rows = [
+        ["Новый контакт", 22, "blue"],
+        ["Из игры или группы", 38, "violet"],
+        ["Переход в личку", 52, "blue"],
+        ["Секретность", 78, "amber"],
+        ["Деньги, банк, код", 95, "red"]
+      ];
+      document.querySelector("#riskLadder").innerHTML = rows.map(([name, value, color]) => `
+        <div class="incident-stage"><strong>${name}</strong><div class="bar"><span style="width:${value}%;background:var(--${color})"></span></div></div>
+      `).join("");
+    }
+
+    function renderLists() {
+      const simple = (selector, rows) => {
+        document.querySelector(selector).innerHTML = rows.map(row => `<div class="item"><h4>${row[0]}</h4><p>${row[1]}</p></div>`).join("");
+      };
+      simple("#talkScripts", [
+        ["Начать с безопасности", "“Ты не виноват. Мне важно, чтобы ты ничего не отправлял, пока мы вместе не проверим.”"],
+        ["Не обвинять", "“Мошенники специально давят на секретность. Это не стыдно, это их прием.”"],
+        ["Вернуть контроль", "“Давай нажмем паузу, сохраним ник и спокойно разберем.”"]
+      ]);
+      simple("#dontList", [
+        ["Не кричать", "Иначе ребенок в следующий раз скроет контакт раньше."],
+        ["Не писать мошеннику с угрозами", "Лучше сохранить данные и заблокировать контакт."],
+        ["Не отбирать телефон первым действием", "Сначала остановить перевод, код, ссылку или установку приложения."]
+      ]);
+      simple("#afterList", [
+        ["Обновить доверенный круг", "Проверить, кому ребенок может быстро позвонить."],
+        ["Добавить правило", "Если появился новый паттерн, занести его в правила риска."],
+        ["Провести мини-тренировку", "Один короткий сценарий на 2 минуты лучше длинной лекции."]
+      ]);
+      simple("#settingsList", [
+        ["Новые личные контакты", "Уведомлять родителя о новых собеседниках с источником контакта."],
+        ["Переход из групп в личку", "Повышать риск, если контакт пришел из Roblox, Minecraft, Discord или общего Telegram-чата."],
+        ["Антискам-пауза", "Останавливать ссылки, банковские приложения и установку APK при высоком риске."],
+        ["Удаленный доступ", "Отдельно ловить AnyDesk, RustDesk, TeamViewer и запросы демонстрации экрана."],
+        ["Приватность подростка", "Показывать только причину риска и опасные фрагменты, не всю переписку."]
+      ]);
+      simple("#architectureList", [
+        ["Android-компаньон", "Notification Listener, локальные правила, защищенное хранилище событий."],
+        ["Accessibility-слой", "Только для явных пауз: ссылки, банковские приложения, удаленный доступ."],
+        ["Сервер семьи", "Push, синхронизация настроек, аудит доступа, доверенный круг."],
+        ["Родительская панель", "Радар, инциденты, отчеты, настройки приватности."],
+        ["Модель риска", "Сначала объяснимые правила, затем компактная локальная ML-модель."]
+      ]);
+      document.querySelector("#pilotTable").innerHTML = `
+        <div class="table-row head"><div>Этап</div><div>Что проверяем</div><div>Метрика</div><div>Статус</div></div>
+        <div class="table-row"><div>День 1</div><div>Объяснение ребенку</div><div>Понял правила</div><div><span class="badge green">готово</span></div></div>
+        <div class="table-row"><div>Дни 2-3</div><div>Новые контакты</div><div>Меньше 5 ложных тревог</div><div><span class="badge amber">тест</span></div></div>
+        <div class="table-row"><div>Дни 4-5</div><div>Сценарии секретности</div><div>Пауза до действия</div><div><span class="badge amber">тест</span></div></div>
+        <div class="table-row"><div>День 7</div><div>Семейный разбор</div><div>Нет ощущения наказания</div><div><span class="badge blue">опрос</span></div></div>
+      `;
+    }
+
+    function analyzeDialog() {
+      const text = document.querySelector("#dialogInput").value.toLowerCase();
+      const found = triggerMap.filter(group => group.words.some(word => text.includes(word)));
+      let score = found.reduce((sum, group) => sum + group.weight, 0);
+      if (found.some(g => g.label === "секретность") && found.some(g => g.label === "банк или деньги")) score += 12;
+      if (found.some(g => g.label === "код или доступ") && found.some(g => g.label === "срочность")) score += 10;
+      score = Math.min(99, score);
+      if (found.length === 0) score = 7;
+      const level = score >= 80 ? ["Высокий риск", "red", "Срочно включить паузу, уведомить доверенный круг и остановить действие."] :
+        score >= 50 ? ["Средний риск", "amber", "Показать предупреждение и попросить проверить контакт со взрослым."] :
+        score >= 25 ? ["Низкий риск", "blue", "Сохранить в истории, без срочного уведомления."] :
+        ["Похоже безопасно", "green", "Красных флагов в коротком фрагменте нет."];
+      const scoreNum = document.querySelector("#scoreNum");
+      scoreNum.textContent = score;
+      scoreNum.className = `score-num ${level[1]}`;
+      document.querySelector("#scoreTitle").textContent = level[0];
+      document.querySelector("#scoreText").textContent = level[2];
+      document.querySelector("#scoreFactors").innerHTML = found.length ? found.map(g => `<span class="factor">${g.label} +${g.weight}</span>`).join("") : `<span class="factor">нет триггеров</span>`;
+      return { score, level: level[0], found };
+    }
+
+    function setTab(tab) {
+      document.querySelectorAll(".view").forEach(view => view.classList.toggle("active", view.id === tab));
+      document.querySelectorAll(".nav button").forEach(btn => btn.setAttribute("aria-selected", String(btn.dataset.tab === tab)));
+      document.querySelector("#pageTitle").textContent = pageCopy[tab][0];
+      document.querySelector("#pageLead").textContent = pageCopy[tab][1];
+    }
+
+    function setMode(mode) {
+      state.mode = mode;
+      const profile = {
+        teen: ["А", "Артем, 14", "подросток · игровые чаты", "Защита активна"],
+        child: ["М", "Миша, 9", "младший ребенок · Roblox", "Жесткая защита"],
+        elder: ["Б", "Бабушка, 72", "мягкая пауза · звонки и банк", "Доверенный помощник"]
+      }[mode];
+      document.querySelector("#avatar").textContent = profile[0];
+      document.querySelector("#profileName").textContent = profile[1];
+      document.querySelector("#profileMeta").textContent = profile[2];
+      document.querySelector("#liveText").textContent = profile[3];
+      renderMetrics();
+      showToast(mode === "elder" ? "Включен уважительный режим: меньше контроля, больше пауз и звонков доверенному человеку." : "Профиль защиты обновлен.");
+    }
+
+    function showToast(message) {
+      const toast = document.querySelector("#toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(window.toastTimer);
+      window.toastTimer = setTimeout(() => toast.classList.remove("show"), 2600);
+    }
+
+    document.querySelectorAll(".nav button").forEach(btn => btn.addEventListener("click", () => setTab(btn.dataset.tab)));
+    document.querySelector("#modeSelect").addEventListener("change", event => setMode(event.target.value));
+    document.querySelectorAll("[data-toast]").forEach(btn => btn.addEventListener("click", () => showToast(btn.dataset.toast)));
+    document.querySelector("#analyzeBtn").addEventListener("click", analyzeDialog);
+    document.querySelector("#simulatePush").addEventListener("click", () => {
+      const result = analyzeDialog();
+      showToast(`Push родителю: ${result.level}. Найдено факторов: ${result.found.length}.`);
+    });
+    document.querySelector("#caseGame").addEventListener("click", () => {
+      document.querySelector("#dialogInput").value = "Го в телеграм, в игре неудобно. Только родителям не говори. Срочно подтверди аккаунт, пришли код и скрин.";
+      analyzeDialog();
+    });
+    document.querySelector("#caseElder").addEventListener("click", () => {
+      document.querySelector("#dialogInput").value = "Это служба безопасности банка. Идет секретная операция, никому не говорите. Срочно переведите деньги на безопасный счет и установите AnyDesk.";
+      analyzeDialog();
+    });
+    document.querySelector("#caseSafe").addEventListener("click", () => {
+      document.querySelector("#dialogInput").value = "Привет, завтра тренировка в 16:00. Домашку скинут в школьный чат. До встречи.";
+      analyzeDialog();
+    });
+
+    renderMetrics();
+    renderEvents();
+    renderContacts();
+    renderRiskLadder();
+    renderLists();
+    analyzeDialog();
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+    }
+  </script>
+</body>
+</html>
