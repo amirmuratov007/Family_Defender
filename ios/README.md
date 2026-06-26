@@ -1,22 +1,42 @@
-# Heimdall iOS production layer
+# Heimdall iOS Starter
 
-The web app is the parent console. Real iPhone protection requires a native iOS app because websites cannot control apps, read app activity or receive Screen Time events.
+This folder is a production-oriented starter for the native iOS app.
 
-## Required Apple capabilities
+It is not a complete Xcode project yet. After Apple Developer Program enrollment, create an Xcode iOS app and copy these files into the matching targets.
 
-- Family Controls entitlement
-- Managed Settings
-- Device Activity
-- UserNotifications
-- App Groups, if extensions share policy state
+## Targets to Create
 
-## Production modules
+1. Main app
+   Bundle ID: `com.heimdallgroup.familyprotection`
 
-- `HeimdallApp.swift`: app entry point
-- `FamilyShieldManager.swift`: requests family authorization and applies app shields
-- Device Activity extension: receives monitored schedule events
-- Backend policy API: stores family rules and sends parent push alerts
+2. Share Extension
+   Bundle ID: `com.heimdallgroup.familyprotection.share`
 
-## Important
+3. Device Activity Monitor Extension
+   Bundle ID: `com.heimdallgroup.familyprotection.monitor`
 
-Apple must approve the Family Controls entitlement for the developer account before a build can monitor or shield apps on a child's iPhone.
+4. Shield Configuration Extension
+   Bundle ID: `com.heimdallgroup.familyprotection.shield`
+
+5. Device Activity Report Extension
+   Bundle ID: `com.heimdallgroup.familyprotection.report`
+
+## Required Apple Capabilities
+
+- Family Controls
+- App Groups
+- Push Notifications
+
+Suggested app group:
+
+`group.com.heimdallgroup.familyprotection`
+
+## Screen Time Frameworks
+
+The code references:
+
+- FamilyControls
+- ManagedSettings
+- DeviceActivity
+
+These APIs require Apple approval for distribution.
