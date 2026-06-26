@@ -1,0 +1,13 @@
+{
+  "name": "heimdall-family-protection",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Heimdall-Group Family Protection web console and API prototype.",
+  "scripts": {
+    "test": "node tests/risk-engine.test.js",
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
