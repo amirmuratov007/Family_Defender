@@ -1,5 +1,5 @@
-const CACHE_NAME = "heimdall-family-protection-v4";
-const ASSETS = ["./", "./index.html", "./en.html", "./ru.html", "./style.css", "./network.js", "./risk.js", "./manifest.webmanifest", "./heimdall-logo.svg", "./shield-icon.svg"];
+const CACHE_NAME = "heimdall-family-protection-v8";
+const ASSETS = ["./", "./index.html", "./en.html", "./ru.html", "./style.css", "./network.js", "./risk.js", "./manifest.webmanifest", "./heimdall-logo.jpg", "./heimdall-logo.svg", "./shield-icon.svg"];
 
 self.addEventListener("install", event => {
   self.skipWaiting();
