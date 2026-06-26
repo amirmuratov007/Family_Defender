@@ -1,44 +1,45 @@
 const canvas = document.querySelector("#net");
+
 if (canvas) {
   const ctx = canvas.getContext("2d");
   let points = [];
-  let frame = 0;
+  let frame;
 
   function resize() {
     const ratio = window.devicePixelRatio || 1;
-    canvas.width = innerWidth * ratio;
-    canvas.height = innerHeight * ratio;
-    canvas.style.width = innerWidth + "px";
-    canvas.style.height = innerHeight + "px";
+    canvas.width = Math.floor(innerWidth * ratio);
+    canvas.height = Math.floor(innerHeight * ratio);
+    canvas.style.width = `${innerWidth}px`;
+    canvas.style.height = `${innerHeight}px`;
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-    const count = Math.min(130, Math.max(56, Math.floor(innerWidth / 12)));
+    const count = Math.min(120, Math.max(52, Math.floor(innerWidth / 12)));
     points = Array.from({ length: count }, () => ({
       x: Math.random() * innerWidth,
       y: Math.random() * innerHeight,
-      vx: (Math.random() - 0.5) * 0.32,
-      vy: (Math.random() - 0.5) * 0.32
+      vx: (Math.random() - 0.5) * 0.28,
+      vy: (Math.random() - 0.5) * 0.28
     }));
   }
 
   function draw() {
     ctx.clearRect(0, 0, innerWidth, innerHeight);
+
     for (const point of points) {
       point.x += point.vx;
       point.y += point.vy;
-      if (point.x < -24) point.x = innerWidth + 24;
-      if (point.x > innerWidth + 24) point.x = -24;
-      if (point.y < -24) point.y = innerHeight + 24;
-      if (point.y > innerHeight + 24) point.y = -24;
+      if (point.x < -20) point.x = innerWidth + 20;
+      if (point.x > innerWidth + 20) point.x = -20;
+      if (point.y < -20) point.y = innerHeight + 20;
+      if (point.y > innerHeight + 20) point.y = -20;
     }
 
-    for (let i = 0; i < points.length; i++) {
-      for (let j = i + 1; j < points.length; j++) {
+    for (let i = 0; i < points.length; i += 1) {
+      for (let j = i + 1; j < points.length; j += 1) {
         const a = points[i];
         const b = points[j];
         const distance = Math.hypot(a.x - b.x, a.y - b.y);
-        if (distance < 145) {
-          ctx.strokeStyle = `rgba(216,172,77,${(1 - distance / 145) * 0.2})`;
-          ctx.lineWidth = 1;
+        if (distance < 150) {
+          ctx.strokeStyle = `rgba(212,164,66,${(1 - distance / 150) * 0.18})`;
           ctx.beginPath();
           ctx.moveTo(a.x, a.y);
           ctx.lineTo(b.x, b.y);
@@ -48,14 +49,15 @@ if (canvas) {
     }
 
     for (const point of points) {
-      const glow = ctx.createRadialGradient(point.x, point.y, 0, point.x, point.y, 12);
-      glow.addColorStop(0, "rgba(255,231,163,.85)");
-      glow.addColorStop(1, "rgba(216,172,77,0)");
+      const glow = ctx.createRadialGradient(point.x, point.y, 0, point.x, point.y, 10);
+      glow.addColorStop(0, "rgba(244,217,138,.9)");
+      glow.addColorStop(1, "rgba(212,164,66,0)");
       ctx.fillStyle = glow;
       ctx.beginPath();
-      ctx.arc(point.x, point.y, 12, 0, Math.PI * 2);
+      ctx.arc(point.x, point.y, 10, 0, Math.PI * 2);
       ctx.fill();
     }
+
     frame = requestAnimationFrame(draw);
   }
 
@@ -66,28 +68,4 @@ if (canvas) {
     resize();
     draw();
   });
-}
-
-const isRu = document.documentElement.lang === "ru";
-const copy = isRu ? { on: "включено", off: "выключено" } : { on: "on", off: "off" };
-const riskScore = document.querySelector("#riskScore");
-
-document.querySelectorAll(".profile").forEach(button => {
-  button.addEventListener("click", () => {
-    document.querySelectorAll(".profile").forEach(item => item.classList.remove("active"));
-    button.classList.add("active");
-    if (riskScore) riskScore.textContent = button.dataset.risk || "";
-  });
-});
-
-document.querySelectorAll(".policy input").forEach(input => {
-  const label = input.closest(".policy");
-  const state = label ? label.querySelector("em") : null;
-  input.addEventListener("change", () => {
-    if (state) state.textContent = input.checked ? copy.on : copy.off;
-  });
-});
-
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js").catch(() => {});
 }
