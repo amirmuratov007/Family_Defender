@@ -1,33 +1,71 @@
-# Heimdall-Group Family Protection
+# Heimdall Family Protection
 
-Премиальный MVP-прототип семейной антискам-защиты для детей и пожилых родственников.
+Heimdall-Group Family Protection is a parent-controlled anti-scam product for children and elderly relatives.
 
-## Что это
+The product focuses on risky moments:
 
-Heimdall Family Protection показывает, как может работать защита от мошенников, которые знакомятся с детьми в играх и чатах, переводят разговор в личку, создают секрет от родителей и давят через срочность, коды, деньги, фото, адрес или установку приложений.
+- a stranger moves from a game chat to a private messenger;
+- someone asks for secrecy from parents;
+- someone requests SMS codes, passwords, money, cards, address, photos, documents, or remote access;
+- a messenger conversation is followed by banking or remote-access behavior.
 
-## iPhone-логика
+## Current Repository Contents
 
-На iPhone первая реалистичная версия работает так:
+- `index.html`, `ru.html`, `en.html` - public product site and family console.
+- `style.css`, `network.js` - visual system and animated background.
+- `api/analyze.js` - serverless API endpoint for risk analysis.
+- `api/health.js` - serverless health endpoint.
+- `lib/risk-engine.js` - shared scam-pattern risk engine.
+- `ios/` - native iOS starter code for Xcode.
+- `APPLE_FAMILY_CONTROLS_REQUEST.md` - Apple entitlement request text.
+- `APPLE_DEVELOPER_CHECKLIST_RU.md` - step-by-step Apple setup checklist.
+- `APP_STORE_REVIEW_NOTES.md` - App Store Review notes.
+- `PRIVACY_POLICY.md` - draft privacy policy.
+- `SECURITY_MODEL.md` - production security model.
 
-1. Ребенок получает подозрительное сообщение.
-2. Ребенок отправляет фрагмент в приложение через Share Sheet или вставляет в проверку.
-3. Приложение локально анализирует риск.
-4. При высоком риске показывает ребенку паузу.
-5. Родитель получает понятный сигнал: почему опасно и что делать.
+## Local Run
 
-## Важно
+```bash
+npm test
+npm start
+```
 
-iOS не дает стороннему приложению постоянно читать Telegram, WhatsApp, Discord и чужие уведомления. Поэтому iPhone MVP должен строиться вокруг прозрачной проверки:
+Open:
 
-**Поделиться -> Heimdall -> анализ риска -> пауза -> сигнал родителю.**
+```text
+http://127.0.0.1:8788
+```
 
-Это не скрытая слежка, а защитный инструмент для моментов, когда незнакомец просит секрет, код, деньги, фото, адрес или установку приложения.
+Risk API:
 
-## Файлы
+```bash
+curl -X POST http://127.0.0.1:8788/api/analyze \
+  -H "content-type: application/json" \
+  -d "{\"text\":\"Перейдем в телеграм. Родителям не говори. Срочно открой банк и пришли код.\"}"
+```
 
-- `index.html` - брендовый интерактивный прототип.
-- `manifest.webmanifest` - PWA-манифест.
-- `service-worker.js` - офлайн-кэш.
-- `shield-icon.svg` - золотая иконка Heimdall.
-- `BUILD_PLAN.md`, `MVP_SPEC.md`, `HOME_TEST_PROTOCOL.md` - рабочие документы MVP.
+## Vercel
+
+The static site and `/api/*` serverless functions can be deployed on Vercel from this repository.
+
+## iOS Reality
+
+An ordinary website cannot silently read Telegram, WhatsApp, Discord, or other private messenger content on iPhone.
+
+The real iPhone product requires:
+
+- native iOS app;
+- Apple Developer Program enrollment;
+- Family Controls Distribution entitlement approval;
+- Device Activity / Managed Settings implementation;
+- parent account and push notification backend.
+
+## Apple Next Step
+
+After joining the Apple Developer Program, follow:
+
+`APPLE_DEVELOPER_CHECKLIST_RU.md`
+
+Then submit:
+
+`APPLE_FAMILY_CONTROLS_REQUEST.md`
