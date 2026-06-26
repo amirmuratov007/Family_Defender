@@ -1,23 +1,132 @@
-const canvas=document.querySelector("#net");
-if(canvas){const ctx=canvas.getContext("2d");let points=[],frame;function resize(){canvas.width=innerWidth*devicePixelRatio;canvas.height=innerHeight*devicePixelRatio;canvas.style.width=innerWidth+"px";canvas.style.height=innerHeight+"px";ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);const count=Math.min(110,Math.max(48,Math.floor(innerWidth/13)));points=Array.from({length:count},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28}))}function draw(){ctx.clearRect(0,0,innerWidth,innerHeight);for(const p of points){p.x+=p.vx;p.y+=p.vy;if(p.x<-20)p.x=innerWidth+20;if(p.x>innerWidth+20)p.x=-20;if(p.y<-20)p.y=innerHeight+20;if(p.y>innerHeight+20)p.y=-20}for(let i=0;i<points.length;i++)for(let j=i+1;j<points.length;j++){const a=points[i],b=points[j],d=Math.hypot(a.x-b.x,a.y-b.y);if(d<150){ctx.strokeStyle=`rgba(213,166,66,${(1-d/150)*.18})`;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()}}for(const p of points){const g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,10);g.addColorStop(0,"rgba(243,217,140,.9)");g.addColorStop(1,"rgba(213,166,66,0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(p.x,p.y,10,0,Math.PI*2);ctx.fill()}frame=requestAnimationFrame(draw)}resize();draw();addEventListener("resize",()=>{cancelAnimationFrame(frame);resize();draw()})}
+const canvas = document.querySelector("#net");
+if (canvas) {
+  const ctx = canvas.getContext("2d");
+  let points = [];
+  let frame = 0;
 
-const style=document.createElement("style");
-style.textContent=`.brand-logo{width:74px!important;border-radius:6px}.chooser-logo{width:min(340px,78vw)!important;border-radius:8px}.hero-logo{width:min(390px,70vw)!important;opacity:.28!important;border-radius:8px}.mini-logo{width:52px!important;border-radius:6px}.layer,.dashboard{border:1px solid var(--line);background:linear-gradient(180deg,rgba(22,20,15,.82),rgba(7,7,9,.78));border-radius:8px;backdrop-filter:blur(16px);box-shadow:0 22px 60px rgba(0,0,0,.24)}.layer-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.layer{min-height:220px;padding:18px;display:flex;flex-direction:column;justify-content:space-between}.layer span{color:rgba(243,217,140,.42);font-size:34px;font-weight:950}.layer h3{margin:0 0 8px;font-size:20px;color:#fff2bc}.layer p,.timeline p,.dash-row span{margin:0;color:var(--muted);line-height:1.5;font-size:14px}.command{display:grid;grid-template-columns:minmax(0,.95fr) minmax(360px,1.05fr);gap:18px;align-items:center}.timeline{display:grid;gap:10px}.timeline div{display:grid;grid-template-columns:18px 1fr;gap:10px;align-items:start}.timeline span{width:10px;height:10px;margin-top:7px;border-radius:50%;background:var(--gold2);box-shadow:0 0 18px rgba(213,166,66,.75)}.dashboard{padding:20px;display:grid;gap:14px}.dash-logo{width:180px;justify-self:center;border-radius:8px;filter:drop-shadow(0 0 28px rgba(213,166,66,.45))}.dash-row{display:grid;grid-template-columns:1fr auto;gap:6px 12px;padding:14px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);border-radius:8px}.dash-row strong{color:#fff2bc}.dash-row b{color:var(--gold2);font-size:24px}.dash-row em{grid-column:1/-1;color:#f5ead0;font-style:normal}.dash-row.critical{border-color:rgba(255,86,86,.32);background:rgba(255,86,86,.08)}.dash-note{color:var(--gold2);font-weight:900;text-transform:uppercase;letter-spacing:.14em;font-size:12px}@media(max-width:940px){.command{grid-template-columns:1fr}.layer-grid{grid-template-columns:1fr 1fr}}@media(max-width:560px){.layer-grid{grid-template-columns:1fr}}`;
-document.head.appendChild(style);
+  function resize() {
+    const ratio = window.devicePixelRatio || 1;
+    canvas.width = innerWidth * ratio;
+    canvas.height = innerHeight * ratio;
+    canvas.style.width = innerWidth + "px";
+    canvas.style.height = innerHeight + "px";
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    const count = Math.min(130, Math.max(56, Math.floor(innerWidth / 12)));
+    points = Array.from({ length: count }, () => ({
+      x: Math.random() * innerWidth,
+      y: Math.random() * innerHeight,
+      vx: (Math.random() - 0.5) * 0.32,
+      vy: (Math.random() - 0.5) * 0.32
+    }));
+  }
 
-const ru=document.documentElement.lang==="ru";
-const copy=ru?{
- suiteTitle:"Полная семейная защита",suiteLead:"Heimdall работает как семейный командный центр: ребенок видит понятную паузу, родитель получает сигнал риска, а вся семья тренируется на коротких сценариях.",
- layers:[["Новый контакт","Отмечаем первый переход из игры, чата или соцсети в личную переписку."],["Психологическое давление","Ловим секретность, срочность, угрозы, обещания и попытку изолировать ребенка."],["Опасное действие","Останавливаем код, перевод, фото, адрес, установку приложения или удаленный доступ."],["Родительский сигнал","Показываем причину риска и спокойный сценарий разговора без обвинения."]],
- dashboardTitle:"Семейный экран",dashboardLead:"Единая панель для родителя: кто в зоне риска, какой сценарий обнаружен и что делать в ближайшие 10 минут.",
- status:["Алиса · 14 лет","Новый контакт из игрового чата","Риск 87","Остановить переход в личку"],status2:["Бабушка","Просьба назвать код из SMS","Риск 96","Позвонить и заблокировать действие"],flowTitle:"Что происходит при тревоге",
- flow:["Heimdall показывает ребенку короткий стоп-сигнал.","Родителю приходит причина риска, а не вся переписка.","Система предлагает фразу для звонка: спокойно, без давления.","После инцидента семья проходит мини-тренировку на похожем сценарии."]
-}:{
- suiteTitle:"Complete Family Protection",suiteLead:"Heimdall should feel like a family command center: the child gets a clear pause, the parent receives the risk reason, and the family trains on short scenarios.",
- layers:[["New contact","Detect the first move from a game, chat or social space into private messaging."],["Psychological pressure","Catch secrecy, urgency, threats, promises and attempts to isolate the child."],["Dangerous action","Stop codes, transfers, photos, addresses, app installs or remote access."],["Parent signal","Show the risk reason and a calm call script without blame."]],
- dashboardTitle:"Family screen",dashboardLead:"One parent panel: who is at risk, which scenario was detected and what to do in the next 10 minutes.",
- status:["Alice · 14","New contact from gaming chat","Risk 87","Stop private migration"],status2:["Grandmother","Asked for SMS code","Risk 96","Call and block action"],flowTitle:"What happens on alert",
- flow:["Heimdall shows the child a short stop signal.","The parent gets the risk reason, not the full conversation.","The system suggests a calm call phrase.","After the incident, the family trains on a similar scenario."]
+  function draw() {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    for (const point of points) {
+      point.x += point.vx;
+      point.y += point.vy;
+      if (point.x < -24) point.x = innerWidth + 24;
+      if (point.x > innerWidth + 24) point.x = -24;
+      if (point.y < -24) point.y = innerHeight + 24;
+      if (point.y > innerHeight + 24) point.y = -24;
+    }
+
+    for (let i = 0; i < points.length; i++) {
+      for (let j = i + 1; j < points.length; j++) {
+        const a = points[i];
+        const b = points[j];
+        const distance = Math.hypot(a.x - b.x, a.y - b.y);
+        if (distance < 145) {
+          ctx.strokeStyle = `rgba(216,172,77,${(1 - distance / 145) * 0.2})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    for (const point of points) {
+      const glow = ctx.createRadialGradient(point.x, point.y, 0, point.x, point.y, 12);
+      glow.addColorStop(0, "rgba(255,231,163,.85)");
+      glow.addColorStop(1, "rgba(216,172,77,0)");
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, 12, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    frame = requestAnimationFrame(draw);
+  }
+
+  resize();
+  draw();
+  addEventListener("resize", () => {
+    cancelAnimationFrame(frame);
+    resize();
+    draw();
+  });
+}
+
+const isRu = document.documentElement.lang === "ru";
+const riskCopy = isRu ? {
+  low: ["Низкий риск", "Связка пока слабая, но событие сохранено в журнале."],
+  mid: ["Средний риск", "Есть признаки давления. Лучше проверить контакт и ограничить действие."],
+  high: ["Высокий риск", "Связка событий похожа на вербовку или мошенничество. Родителю нужно остановить действие и позвонить."],
+  max: ["Критический риск", "Нужно немедленно остановить код, перевод, установку приложения или удаленный доступ."],
+  on: "включено",
+  off: "выключено"
+} : {
+  low: ["Low risk", "The chain is weak so far, but the event is stored in the log."],
+  mid: ["Medium risk", "Pressure signals exist. Verify the contact and restrict the action."],
+  high: ["High risk", "This event chain resembles grooming or fraud. The parent should stop the action and call."],
+  max: ["Critical risk", "Immediately stop the code, transfer, app install or remote access."],
+  on: "on",
+  off: "off"
 };
-const protocol=document.querySelector("#protocol");
-if(protocol&&!document.querySelector(".suite")){const suite=document.createElement("section");suite.className="section suite";suite.innerHTML=`<h2>${copy.suiteTitle}</h2><p class="lead">${copy.suiteLead}</p><div class="layer-grid">${copy.layers.map((item,index)=>`<article class="layer"><span>${String(index+1).padStart(2,"0")}</span><h3>${item[0]}</h3><p>${item[1]}</p></article>`).join("")}</div>`;protocol.after(suite);const dashboard=document.createElement("section");dashboard.className="section command";dashboard.innerHTML=`<div><h2>${copy.dashboardTitle}</h2><p class="lead">${copy.dashboardLead}</p><div class="timeline">${copy.flow.map(text=>`<div><span></span><p>${text}</p></div>`).join("")}</div></div><div class="dashboard"><img src="heimdall-logo.jpg?v=9" alt="" class="dash-logo"><div class="dash-row high"><strong>${copy.status[0]}</strong><span>${copy.status[1]}</span><b>${copy.status[2]}</b><em>${copy.status[3]}</em></div><div class="dash-row critical"><strong>${copy.status2[0]}</strong><span>${copy.status2[1]}</span><b>${copy.status2[2]}</b><em>${copy.status2[3]}</em></div><div class="dash-note">${copy.flowTitle}</div></div>`;suite.after(dashboard)}
+
+const riskScore = document.querySelector("#riskScore");
+document.querySelectorAll(".profile").forEach(button => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll(".profile").forEach(item => item.classList.remove("active"));
+    button.classList.add("active");
+    if (riskScore) riskScore.textContent = button.dataset.risk || "0";
+  });
+});
+
+document.querySelectorAll(".policy input").forEach(input => {
+  const label = input.closest(".policy");
+  const state = label ? label.querySelector("em") : null;
+  input.addEventListener("change", () => {
+    if (state) state.textContent = input.checked ? riskCopy.on : riskCopy.off;
+  });
+});
+
+const scenarioButtons = [...document.querySelectorAll(".scenario")];
+const simRisk = document.querySelector("#simRisk");
+const simTitle = document.querySelector("#simTitle");
+const simText = document.querySelector("#simText");
+const simChips = document.querySelector("#simChips");
+
+function renderScenario() {
+  if (!scenarioButtons.length || !simRisk) return;
+  const active = scenarioButtons.filter(button => button.classList.contains("active"));
+  const score = Math.min(100, active.reduce((sum, button) => sum + Number(button.dataset.risk || 0), 0));
+  const level = score >= 90 ? riskCopy.max : score >= 65 ? riskCopy.high : score >= 35 ? riskCopy.mid : riskCopy.low;
+  simRisk.textContent = String(score);
+  if (simTitle) simTitle.textContent = level[0];
+  if (simText) simText.textContent = level[1];
+  if (simChips) simChips.innerHTML = active.map(button => `<span class="chip">${button.dataset.label}</span>`).join("");
+}
+
+scenarioButtons.forEach(button => {
+  button.addEventListener("click", () => {
+    button.classList.toggle("active");
+    renderScenario();
+  });
+});
+renderScenario();
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js").catch(() => {});
+}
