@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject private var familyShield: FamilyShieldManager
+    @State private var role: AppRole = .parent
     @State private var text = "Перейдем в телеграм. Родителям не говори. Срочно открой банк и пришли код из смс."
     @State private var result = RiskAnalyzer.analyze("")
 
@@ -12,9 +13,12 @@ struct ContentView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 28) {
                         HeaderView()
-                        authorizationBlock
-                        analysisBlock
-                        protectionBlock
+                        rolePicker
+                        if role == .parent {
+                            ParentDashboardView()
+                        } else {
+                            ChildProtectionView(text: $text, result: $result)
+                        }
                     }
                     .padding(24)
                 }
@@ -25,53 +29,144 @@ struct ContentView: View {
         .preferredColorScheme(.dark)
     }
 
-    private var authorizationBlock: some View {
+    private var rolePicker: some View {
+        Picker("Режим", selection: $role) {
+            ForEach(AppRole.allCases) { role in
+                Text(role.title).tag(role)
+            }
+        }
+        .pickerStyle(.segmented)
+    }
+}
+
+private enum AppRole: String, CaseIterable, Identifiable {
+    case parent
+    case child
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .parent: return "Родитель"
+        case .child: return "Ребенок"
+        }
+    }
+}
+
+private struct ParentDashboardView: View {
+    @EnvironmentObject private var familyShield: FamilyShieldManager
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 24) {
+            ParentSetupView()
+            ParentStatusView()
+            ParentRulesView()
+        }
+    }
+}
+
+private struct ParentSetupView: View {
+    @EnvironmentObject private var familyShield: FamilyShieldManager
+
+    var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Parent-controlled protection")
+            Text("Родительская версия")
                 .font(.title2.bold())
                 .foregroundStyle(.white)
-            Text("The child does not configure protection alone. A parent authorizes Family Controls and chooses rules.")
+            Text("Родитель создает семью, подключает iPhone ребенка, дает разрешение Screen Time и получает только риск-сигналы, а не всю переписку.")
                 .foregroundStyle(.secondary)
-            Button("Request Family Controls authorization") {
+            Button("Запросить разрешение Family Controls") {
                 Task { await familyShield.requestAuthorization() }
             }
             .buttonStyle(.borderedProminent)
+            Button("Включить базовые правила") {
+                familyShield.applyBaseRules()
+            }
+            .buttonStyle(.bordered)
             Text(familyShield.statusText)
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
     }
+}
 
-    private var analysisBlock: some View {
+private struct ParentStatusView: View {
+    var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Check suspicious text")
+            Text("Семейная панель")
                 .font(.title2.bold())
                 .foregroundStyle(.white)
-            TextEditor(text: $text)
-                .frame(minHeight: 140)
-                .scrollContentBackground(.hidden)
-                .foregroundStyle(.white)
-                .padding(12)
-                .background(.white.opacity(0.06))
-            Button("Analyze risk") {
-                result = RiskAnalyzer.analyze(text)
-            }
-            .buttonStyle(.borderedProminent)
-            RiskResultView(result: result)
+            InfoRow(title: "Подключенные устройства", value: "0")
+            InfoRow(title: "Доверенные взрослые", value: "Не добавлены")
+            InfoRow(title: "Последняя тревога", value: "Нет реальных событий")
+            Text("После подключения здесь появятся реальные устройства семьи. Демонстрационные дети и фальшивые тревоги не показываются.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
         }
     }
+}
 
-    private var protectionBlock: some View {
+private struct ParentRulesView: View {
+    private let rules = [
+        "новый контакт или переход из игры в личку",
+        "секретность, давление или срочность",
+        "код, банк, деньги, адрес, фото или удаленный доступ",
+        "антискам-пауза перед опасным действием"
+    ]
+
+    var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Protection rules")
+            Text("Что получает родитель")
                 .font(.title2.bold())
                 .foregroundStyle(.white)
-            Text("After Apple approves Family Controls, this app can shield risky apps and react to Device Activity events.")
-                .foregroundStyle(.secondary)
-            Button("Enable base protection rules") {
-                familyShield.applyBaseRules()
+            ForEach(rules, id: \.self) { rule in
+                Label(rule, systemImage: "shield.checkered")
+                    .foregroundStyle(.secondary)
             }
-            .buttonStyle(.bordered)
+        }
+    }
+}
+
+private struct ChildProtectionView: View {
+    @Binding var text: String
+    @Binding var result: RiskResult
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 24) {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Версия ребенка")
+                    .font(.title2.bold())
+                    .foregroundStyle(.white)
+                Text("Ребенок не настраивает слежку и правила. Он получает простую паузу, объяснение риска и кнопку связи со взрослым.")
+                    .foregroundStyle(.secondary)
+            }
+
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Проверить подозрительное сообщение")
+                    .font(.title2.bold())
+                    .foregroundStyle(.white)
+                TextEditor(text: $text)
+                    .frame(minHeight: 140)
+                    .scrollContentBackground(.hidden)
+                    .foregroundStyle(.white)
+                    .padding(12)
+                    .background(.white.opacity(0.06))
+                Button("Проверить риск") {
+                    result = RiskAnalyzer.analyze(text)
+                }
+                .buttonStyle(.borderedProminent)
+                RiskResultView(result: result)
+            }
+
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Антискам-пауза")
+                    .font(.title2.bold())
+                    .foregroundStyle(.white)
+                Text("Если кто-то просит код, деньги, фото, адрес, секрет или удаленный доступ, ребенок видит паузу и зовет взрослого.")
+                    .foregroundStyle(.secondary)
+                Button("Позвонить доверенному взрослому") {}
+                    .buttonStyle(.bordered)
+            }
         }
     }
 }
@@ -86,8 +181,31 @@ private struct HeaderView: View {
             Text("Family Protection")
                 .font(.largeTitle.bold())
                 .foregroundStyle(.white)
-            Text("A safety pause against messenger scams, secrecy, codes, banking pressure, and remote-access fraud.")
+            Text("Родительская панель и детская антискам-пауза против секретности, кодов, денег и удаленного доступа.")
                 .foregroundStyle(.secondary)
+        }
+    }
+}
+
+private struct InfoRow: View {
+    let title: String
+    let value: String
+
+    var body: some View {
+        HStack(alignment: .firstTextBaseline) {
+            Text(title)
+                .foregroundStyle(.secondary)
+            Spacer(minLength: 16)
+            Text(value)
+                .font(.headline)
+                .foregroundStyle(.white)
+                .multilineTextAlignment(.trailing)
+        }
+        .padding(.vertical, 8)
+        .overlay(alignment: .bottom) {
+            Rectangle()
+                .fill(.white.opacity(0.12))
+                .frame(height: 1)
         }
     }
 }

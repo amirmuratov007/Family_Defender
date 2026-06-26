@@ -9,7 +9,7 @@ import DeviceActivity
 
 @MainActor
 final class FamilyShieldManager: ObservableObject {
-    @Published var statusText = "Family Controls authorization has not been requested."
+    @Published var statusText = "Разрешение Family Controls еще не запрашивалось."
 
     #if canImport(ManagedSettings)
     private let store = ManagedSettingsStore()
@@ -19,12 +19,12 @@ final class FamilyShieldManager: ObservableObject {
         #if canImport(FamilyControls)
         do {
             try await AuthorizationCenter.shared.requestAuthorization(for: .child)
-            statusText = "Family Controls authorization granted."
+            statusText = "Family Controls разрешен родителем."
         } catch {
-            statusText = "Authorization failed: \(error.localizedDescription)"
+            statusText = "Не удалось получить разрешение: \(error.localizedDescription)"
         }
         #else
-        statusText = "FamilyControls framework is unavailable in this build environment."
+        statusText = "FamilyControls недоступен в этой среде сборки."
         #endif
     }
 
@@ -32,9 +32,9 @@ final class FamilyShieldManager: ObservableObject {
         #if canImport(ManagedSettings)
         // Production app should apply parent-selected FamilyActivitySelection here.
         store.shield.webDomains = nil
-        statusText = "Base protection rules placeholder applied. Connect FamilyActivitySelection after entitlement approval."
+        statusText = "Базовые правила сохранены. После одобрения entitlement сюда подключается FamilyActivitySelection."
         #else
-        statusText = "ManagedSettings framework is unavailable in this build environment."
+        statusText = "ManagedSettings недоступен в этой среде сборки."
         #endif
     }
 }
