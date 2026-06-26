@@ -6,111 +6,109 @@
   <meta name="theme-color" content="#050506">
   <link rel="manifest" href="manifest.webmanifest">
   <title>Heimdall-Group - Семейная защита</title>
-  <link rel="stylesheet" href="style.css?v=10">
+  <link rel="stylesheet" href="style.css?v=12">
 </head>
 <body>
   <canvas id="net" aria-hidden="true"></canvas>
   <div class="app-shell">
     <header class="topbar">
       <a class="brand" href="index.html" aria-label="Heimdall-Group">
-        <img src="heimdall-logo.svg?v=10" alt="Логотип Heimdall-Group">
+        <img src="heimdall-logo.svg?v=12" alt="Логотип Heimdall-Group">
         <span><strong>Heimdall-Group</strong><small>Family Protection</small></span>
       </a>
       <nav class="top-actions" aria-label="Переключение языка">
         <a class="btn secondary" href="en.html">EN</a>
-        <a class="btn primary" href="#setup">Настроить iPhone</a>
+        <a class="btn primary" href="#install">Подключить iPhone</a>
       </nav>
     </header>
 
-    <main class="dashboard-grid">
+    <main class="dashboard-grid product-mode">
       <aside class="sidebar panel">
-        <p class="kicker">Семья</p>
-        <h1>Панель родителя</h1>
-        <p class="muted">Heimdall не просит ребенка пересылать переписки. Он строится вокруг родительских правил, событий iPhone и тревожных связок действий.</p>
+        <p class="kicker">Родитель</p>
+        <h1>Семейная консоль</h1>
+        <p class="muted">Это главный экран родителя: здесь подключаются iPhone, задаются правила и приходят тревоги о рискованных действиях.</p>
         <div class="profile-list" aria-label="Профили семьи">
-          <button class="profile active" data-profile="Алиса" data-risk="87"><span>Алиса</span><small>14 лет · iPhone</small></button>
-          <button class="profile" data-profile="Марк" data-risk="42"><span>Марк</span><small>11 лет · iPhone</small></button>
-          <button class="profile" data-profile="Бабушка" data-risk="96"><span>Бабушка</span><small>72 года · iPhone</small></button>
+          <button class="profile active" data-profile="Алиса" data-risk="Защищена"><span>Алиса</span><small>14 лет · профиль активен</small></button>
+          <button class="profile" data-profile="Марк" data-risk="Нужно подключить"><span>Марк</span><small>11 лет · ожидает iPhone</small></button>
+          <button class="profile" data-profile="Бабушка" data-risk="Защищена"><span>Бабушка</span><small>72 года · профиль активен</small></button>
         </div>
-        <div class="truth-box">
-          <strong>Честно про iPhone</strong>
-          <p>Обычное приложение не может тайно читать закрытые чаты Telegram. Рабочая схема: Family Controls, Screen Time, DNS/VPN-профиль, одобрение приложений и сигналы опасных действий.</p>
-        </div>
+        <a class="btn primary full" href="#install">Добавить устройство</a>
       </aside>
 
       <section class="main-console">
         <section class="hero-panel panel">
           <div>
-            <p class="kicker">Сегодня · активная защита</p>
-            <h2>Ловим не переписку, а момент вербовки.</h2>
-            <p class="muted wide">Новый контакт после игры, быстрый переход в Telegram, банк после мессенджера, код, удаленный доступ, секретность, ночные сообщения. Родитель получает сигнал до необратимого действия.</p>
+            <p class="kicker">Heimdall Protection</p>
+            <h2>Родитель управляет защитой. Ребенок ничего не настраивает.</h2>
+            <p class="muted wide">Продуктовый контур: родитель подключает iPhone, включает правила, получает тревоги о переходах из игр в мессенджеры, установке удаленного доступа, банковских действиях после чата и ночных контактах.</p>
           </div>
-          <img class="hero-logo" src="heimdall-logo.svg?v=10" alt="Логотип Heimdall">
+          <img class="hero-logo" src="heimdall-logo.svg?v=12" alt="Логотип Heimdall">
         </section>
 
         <section class="kpi-grid" aria-label="Состояние защиты">
-          <article class="kpi panel"><span>4</span><small>активные тревоги</small></article>
-          <article class="kpi panel danger"><span id="riskScore">87</span><small>риск выбранного профиля</small></article>
-          <article class="kpi panel"><span>9</span><small>заблокированных действий</small></article>
-          <article class="kpi panel"><span>3</span><small>устройства под защитой</small></article>
+          <article class="kpi panel"><span>2</span><small>устройства подключены</small></article>
+          <article class="kpi panel danger"><span id="riskScore">Защищена</span><small>выбранный профиль</small></article>
+          <article class="kpi panel"><span>7</span><small>правил включено</small></article>
+          <article class="kpi panel"><span>24/7</span><small>мониторинг событий</small></article>
+        </section>
+
+        <section class="two-col" id="install">
+          <article class="panel setup-panel">
+            <p class="kicker">Подключение iPhone</p>
+            <h3>Что делает родитель</h3>
+            <ol class="steps">
+              <li><b>1. Открыть сайт на iPhone ребенка</b><span>Родитель сам открывает ссылку, не просит ребенка ничего делать.</span></li>
+              <li><b>2. Установить Heimdall</b><span>Добавить сайт на экран “Домой” и установить семейный профиль, когда будет подключен backend профилей.</span></li>
+              <li><b>3. Включить Экранное время</b><span>Родитель ставит код Screen Time, включает ограничения приложений и покупки только с разрешения.</span></li>
+              <li><b>4. Включить правила</b><span>Telegram, Discord, игровые чаты, банки и удаленный доступ получают семейные политики.</span></li>
+            </ol>
+            <div class="install-actions">
+              <a class="btn primary" href="manifest.webmanifest">Установить PWA</a>
+              <a class="btn secondary" href="IPHONE_SETUP_RU.md">Инструкция iPhone</a>
+            </div>
+          </article>
+
+          <article class="panel device-panel">
+            <p class="kicker">Устройства</p>
+            <h3>Статус семьи</h3>
+            <div class="device-row ok"><b>Алиса · iPhone</b><span>Экранное время включено</span><em>Активно</em></div>
+            <div class="device-row wait"><b>Марк · iPhone</b><span>Ожидает установки</span><em>Подключить</em></div>
+            <div class="device-row ok"><b>Бабушка · iPhone</b><span>Профиль Heimdall добавлен</span><em>Активно</em></div>
+          </article>
         </section>
 
         <section class="two-col">
           <article class="panel feed-panel">
             <div class="section-head">
-              <div><p class="kicker">Сигналы</p><h3>Живая лента риска</h3></div>
+              <div><p class="kicker">Тревоги</p><h3>Что увидит родитель</h3></div>
               <span class="status-dot">online</span>
             </div>
             <div class="feed">
-              <div class="alert high"><b>Игровой чат → Telegram за 3 минуты</b><span>Новый контакт зовет в личку после матча. Нужно подтверждение родителя.</span></div>
-              <div class="alert critical"><b>Telegram → банк за 9 минут</b><span>Сработала связка: мессенджер, срочность, финансовое приложение.</span></div>
-              <div class="alert critical"><b>Запрос удаленного доступа AnyDesk</b><span>Установка заблокирована политикой семьи.</span></div>
-              <div class="alert medium"><b>Новый номер пишет ночью</b><span>Контакт не из адресной книги, сообщение после 22:00.</span></div>
+              <div class="alert high"><b>Новый контакт после игрового чата</b><span>Heimdall сообщает родителю, когда ребенок после игры переходит в личный мессенджер.</span></div>
+              <div class="alert critical"><b>Мессенджер → банковское приложение</b><span>Опасная связка: разговор, срочность, затем финансовое действие.</span></div>
+              <div class="alert critical"><b>Попытка установить AnyDesk / RustDesk</b><span>Удаленный доступ блокируется семейной политикой.</span></div>
+              <div class="alert medium"><b>Ночной контакт вне адресной книги</b><span>Родитель получает уведомление без чтения всей переписки.</span></div>
             </div>
           </article>
 
           <article class="panel policy-panel">
-            <div class="section-head"><div><p class="kicker">Правила</p><h3>Политики iPhone</h3></div></div>
-            <label class="policy"><input type="checkbox" checked><span>Telegram и Discord только по расписанию</span><em>включено</em></label>
+            <div class="section-head"><div><p class="kicker">Правила</p><h3>Семейные политики</h3></div></div>
+            <label class="policy"><input type="checkbox" checked><span>Запрашивать разрешение на Telegram и Discord</span><em>включено</em></label>
             <label class="policy"><input type="checkbox" checked><span>Блокировать AnyDesk, RustDesk, TeamViewer</span><em>включено</em></label>
             <label class="policy"><input type="checkbox" checked><span>Тревога при переходе игра → личный мессенджер</span><em>включено</em></label>
             <label class="policy"><input type="checkbox" checked><span>Тревога при банк после мессенджера</span><em>включено</em></label>
-            <label class="policy"><input type="checkbox"><span>Полная блокировка общения после 22:00</span><em>выключено</em></label>
+            <label class="policy"><input type="checkbox" checked><span>Запрет установок без родителя</span><em>включено</em></label>
           </article>
         </section>
 
-        <section class="two-col" id="setup">
-          <article class="panel setup-panel">
-            <p class="kicker">Установка на iPhone</p>
-            <h3>Что реально ставится детям</h3>
-            <ol class="steps">
-              <li><b>Профиль защиты</b><span>Родитель ставит Heimdall-профиль на iPhone ребенка: Screen Time, Family Controls, DNS/VPN-сигналы.</span></li>
-              <li><b>Правила приложений</b><span>Telegram, Discord, игры, банки и удаленный доступ получают семейные ограничения.</span></li>
-              <li><b>События вместо чтения чатов</b><span>Система видит опасные связки: новое приложение, домен, категория, время, переход, попытка установки.</span></li>
-              <li><b>Тревога родителю</b><span>Родитель получает причину, риск и короткий сценарий звонка ребенку.</span></li>
-            </ol>
-          </article>
-
-          <article class="panel simulator-panel">
-            <p class="kicker">Симулятор</p>
-            <h3>Соберите сценарий атаки</h3>
-            <div class="scenario-buttons">
-              <button class="scenario active" data-risk="18" data-label="Новый контакт из игры">игра → новый контакт</button>
-              <button class="scenario active" data-risk="22" data-label="Переход в Telegram">переход в Telegram</button>
-              <button class="scenario active" data-risk="30" data-label="Банк после мессенджера">банк после чата</button>
-              <button class="scenario" data-risk="28" data-label="Просьба назвать код">просит код</button>
-              <button class="scenario" data-risk="38" data-label="Удаленный доступ">AnyDesk</button>
-            </div>
-            <div class="risk-card">
-              <span id="simRisk">70</span>
-              <div><b id="simTitle">Высокий риск</b><p id="simText">Связка событий похожа на вербовку или мошенничество. Родителю нужно остановить действие и позвонить.</p></div>
-            </div>
-            <div class="chips" id="simChips"></div>
-          </article>
+        <section class="panel reality-panel">
+          <p class="kicker">Боевой слой</p>
+          <h3>Что нужно для настоящей защиты, а не картинки</h3>
+          <p class="muted wide">Сайт уже является родительской консолью. Чтобы он реально защищал iPhone, нужен следующий слой: iOS-приложение Heimdall с Apple Family Controls entitlement, сервер правил и push-уведомления. Без этого ни один сайт не сможет тайно читать Telegram или управлять приложениями на iPhone.</p>
         </section>
       </section>
     </main>
   </div>
-  <script src="network.js?v=10"></script>
+  <script src="network.js?v=12"></script>
 </body>
 </html>
