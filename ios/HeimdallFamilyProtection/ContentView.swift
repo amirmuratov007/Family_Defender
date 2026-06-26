@@ -120,10 +120,14 @@ private struct RoleHeader: View {
                     .foregroundStyle(.secondary)
             }
             Spacer()
-            Button("Сменить") {
+            Button {
                 changeRole()
+            } label: {
+                Image(systemName: "arrow.triangle.2.circlepath")
+                    .frame(width: 36, height: 32)
             }
             .buttonStyle(.bordered)
+            .accessibilityLabel("Сменить роль")
         }
     }
 }

@@ -6,9 +6,14 @@
   "scripts": {
     "check:encoding": "python scripts/check_text_encoding.py",
     "test": "npm run check:encoding && node tests/risk-engine.test.js",
+    "desktop": "electron desktop/main.cjs",
+    "desktop:shortcut": "powershell -ExecutionPolicy Bypass -File desktop/install-shortcut.ps1",
     "start": "node server.js"
   },
   "engines": {
     "node": ">=20"
+  },
+  "devDependencies": {
+    "electron": "^42.5.0"
   }
 }
