@@ -69,3 +69,13 @@ After joining the Apple Developer Program, follow:
 Then submit:
 
 `APPLE_FAMILY_CONTROLS_REQUEST.md`
+
+## iOS Build Prep
+
+On a Mac with Xcode installed:
+
+```bash
+ios/scripts/setup_macos.sh
+```
+
+This installs XcodeGen if needed, generates `HeimdallFamilyProtection.xcodeproj`, and opens it in Xcode.

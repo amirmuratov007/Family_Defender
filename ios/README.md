@@ -30,6 +30,12 @@
 
 4. В Xcode выбрать свою Apple Developer Team для всех target.
 
+Можно сделать то же одной командой из корня репозитория:
+
+```sh
+ios/scripts/setup_macos.sh
+```
+
 ## Targets
 
 1. Main app

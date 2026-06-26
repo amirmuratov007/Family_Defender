@@ -4,7 +4,8 @@
   "private": true,
   "description": "Heimdall-Group Family Protection web console and API prototype.",
   "scripts": {
-    "test": "node tests/risk-engine.test.js",
+    "check:encoding": "python scripts/check_text_encoding.py",
+    "test": "npm run check:encoding && node tests/risk-engine.test.js",
     "start": "node server.js"
   },
   "engines": {
