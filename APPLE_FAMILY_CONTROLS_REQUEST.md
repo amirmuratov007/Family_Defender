@@ -1,60 +1,89 @@
-# Apple Family Controls entitlement request package
+# Apple Family Controls Distribution Entitlement Request
 
-Use this content when requesting the Family Controls entitlement from Apple Developer.
+Submit here:
 
-## Product name
+https://developer.apple.com/contact/request/family-controls-distribution
+
+Only the Apple Developer Program Account Holder can submit this request.
+
+## App Details
+
+App name:
 
 Heimdall Family Protection
 
-## Primary bundle ID
+Primary Bundle ID:
 
-Replace with the final Apple Developer Bundle ID:
+com.heimdallgroup.familyprotection
 
-`group.heimdall.familyprotection`
+Suggested extension Bundle IDs:
 
-## Extension bundle IDs
+- com.heimdallgroup.familyprotection.monitor
+- com.heimdallgroup.familyprotection.shield
+- com.heimdallgroup.familyprotection.report
+- com.heimdallgroup.familyprotection.share
 
-If the production app includes Device Activity extensions, request entitlement for each target that uses Screen Time APIs:
+## Request Text
 
-- `group.heimdall.familyprotection.monitor`
-- `group.heimdall.familyprotection.report`
-- `group.heimdall.familyprotection.shield`
+Hello Apple Developer Support,
 
-## Short description
+We are requesting access to the Family Controls Distribution entitlement for Heimdall Family Protection.
 
-Heimdall Family Protection is a transparent parental safety app that helps parents protect children and elderly family members from online fraud, coercion, remote-access scams and risky app behavior.
+App name:
+Heimdall Family Protection
 
-## Entitlement justification
+Primary Bundle ID:
+com.heimdallgroup.familyprotection
 
-Heimdall needs Apple Family Controls, Managed Settings and Device Activity APIs to let parents configure family safety rules on a child's iPhone. The app is designed to help parents restrict or shield risky apps, block remote-access tools, limit messenger usage, monitor app-category events and receive safety alerts when risky behavior patterns occur, such as game chat to private messenger transitions, remote-access installation attempts, or banking-app activity immediately after messenger usage.
+Additional related extension Bundle IDs, if required:
+com.heimdallgroup.familyprotection.monitor
+com.heimdallgroup.familyprotection.shield
+com.heimdallgroup.familyprotection.report
+com.heimdallgroup.familyprotection.share
 
-Heimdall does not secretly read private message content and does not attempt to bypass end-to-end encryption. The app uses Apple-approved parental-control mechanisms and requires parent authorization through Apple's Screen Time / Family Controls flow.
+Purpose of the app:
+Heimdall Family Protection is a parent-controlled family safety app designed to help protect children and elderly family members from online fraud, coercion, and scam attempts that often begin in games, social chats, and messengers.
 
-## User benefit
+The app is not designed for hidden surveillance. Its goal is to create a safety pause when a child or elderly family member is pressured to share codes, send money, install remote-access software, move from a game chat to a private messenger, disclose personal information, or perform another risky action.
 
-Children and elderly relatives are frequently targeted by scammers who pressure them through messengers, gaming chats and remote-access tools. Heimdall gives parents a legitimate safety layer to stop dangerous actions before financial loss, account compromise or coerced behavior occurs.
+Why Family Controls is required:
+We need Family Controls, Device Activity, and Managed Settings capabilities to allow parents or guardians to:
+- authorize family protection on a child’s iPhone;
+- configure app and category shielding rules;
+- detect risky device-activity patterns such as messenger-to-banking flows or remote-access app usage;
+- help prevent installation or use of high-risk apps such as remote-access tools;
+- show protective shield screens during risky moments;
+- send parent alerts without exposing full private message content.
 
-## Privacy position
+Privacy and safety approach:
+Heimdall Family Protection is built around data minimization. Parents should receive risk reasons and safety alerts, not a full copy of private conversations. The app will clearly explain what is monitored, require parent/guardian authorization, and follow Apple’s privacy and child-safety expectations.
 
-Heimdall is designed around data minimization. Parents receive safety signals, rule status and risk reasons. The app does not collect full private conversations, does not run covert surveillance and does not expose private message content to parents.
+Target users:
+Families with children and elderly relatives who need protection from scams, social engineering, coercion, and remote-access fraud.
 
-## App Store review positioning
+We believe this use case aligns with the intended purpose of Family Controls and Screen Time APIs: helping families manage device safety and protect vulnerable users.
 
-Category: parental controls / family safety.
+Thank you for reviewing our request.
 
-The app should be positioned as transparent family protection, not spyware, monitoring, covert tracking or private-message interception.
+## Follow-Up Text
 
-## Apple form notes
+Hello Apple Developer Support,
 
-- Submit the request from the Apple Developer Account Holder account.
-- Use the production App ID / Bundle ID.
-- If DeviceActivityMonitor, DeviceActivityReport or Shield extensions are included, request entitlement for those bundle IDs too.
-- After approval, regenerate provisioning profiles and enable the capability in Xcode.
+I submitted a Family Controls Distribution entitlement request for Heimdall Family Protection and would like to follow up.
 
-## Follow-up after approval
+Submission date:
+[DATE]
 
-1. Enable Family Controls capability for the approved App IDs.
-2. Regenerate development and distribution provisioning profiles.
-3. Add entitlements to the main app and extensions.
-4. Archive in Xcode.
-5. Validate and upload to TestFlight.
+Team ID:
+[TEAM ID]
+
+Bundle IDs:
+- com.heimdallgroup.familyprotection
+- com.heimdallgroup.familyprotection.monitor
+- com.heimdallgroup.familyprotection.shield
+- com.heimdallgroup.familyprotection.report
+- com.heimdallgroup.familyprotection.share
+
+The entitlement is required for a parent-controlled family safety app that uses Screen Time APIs to help protect children and elderly family members from scams, coercion, remote-access fraud, and risky app usage.
+
+Please let me know if any additional information is required.
